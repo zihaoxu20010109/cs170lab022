@@ -4,6 +4,7 @@
 #include "memory.h"
 #include "kt.h"
 #include "kos.h"
+#include "dllist.h"
 struct PCB{
     int my_registers[NumTotalRegs];
     int base;
