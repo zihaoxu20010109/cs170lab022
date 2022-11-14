@@ -330,7 +330,7 @@ void myown_exit(void *arg)
     struct PCB *pcb=(struct PCB*)arg;
     pcb->exit_value=pcb->my_registers[5];
     memory_chunk[pcb->mem_int]=0;
-    //memset(main_memory+pcb->base, 0, pcb->limit);
+    memset(main_memory+pcb->base, 0, pcb->limit);
     jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
 
     JRB ptr;
