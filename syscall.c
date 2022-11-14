@@ -340,6 +340,18 @@ void myown_exit(void *arg)
 
 
 
+    if(!dll_empty(pcb->waiters)){
+        Dllist ptr;
+        dll_traverse(ptr, pcb->waiters){
+            struct PCB* child=(struct PCB*)(ptr->val.v);
+            dll_delete_node(ptr);
+            destroy_pid(child->pid);
+            for (int i=0; i<NumTotalRegs; ++i){
+                child->my_registers[i]=0;
+            }
+            free(child);
+        }
+    }
 
     if(pcb->parent == init){
         destroy_pid(pcb->pid);
