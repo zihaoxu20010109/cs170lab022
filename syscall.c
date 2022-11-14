@@ -294,6 +294,8 @@ void mydo_fork(void *arg){
     memory_chunk[job ->mem_int]=1;
     job ->parent=pcb;
     job ->children = make_jrb();
+    job->waiters_sem=make_kt_sem(0);
+    job->waiters=new_dllist();
     jrb_insert_int(pcb->children, job ->pid, new_jval_v((void*)job));
     // copy the registers.
     for (int i=0; i<NumTotalRegs; ++i){
