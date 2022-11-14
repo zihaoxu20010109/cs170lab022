@@ -34,7 +34,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     pcb->my_registers[NextPCReg] = 4;
     pcb->base = User_Base;
     pcb->limit = User_Limit;
-    pcb->waitesr_sem=make_kt_sem(0);
+    pcb->waiters_sem=make_kt_sem(0);
     pcb->waiters=new_dllist();
     int sbrk_ptr=load_user_program(pcb_argv[0]);
     if (sbrk_ptr < 0) {
