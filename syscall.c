@@ -330,7 +330,7 @@ void myown_exit(void *arg)
     struct PCB *pcb=(struct PCB*)arg;
     pcb->exit_value=pcb->my_registers[5];
     memory_chunk[pcb->mem_int]=0;
-    memset(main_memory+pcb->base, 0, pcb->limit);
+    //memset(main_memory+pcb->base, 0, pcb->limit);
     jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
 
     JRB ptr;
@@ -342,7 +342,7 @@ void myown_exit(void *arg)
     jrb_free_tree(pcb->children);
 
 
-
+    /*
     if(!dll_empty(pcb->waiters)){
         Dllist ptr;
         dll_traverse(ptr, pcb->waiters){
@@ -355,7 +355,7 @@ void myown_exit(void *arg)
             free(child);
         }
     }
-
+    */
     if(pcb->parent == init){
         destroy_pid(pcb->pid);
         for (int i=0; i<NumTotalRegs; ++i){
