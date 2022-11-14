@@ -355,10 +355,6 @@ void myown_exit(void *arg)
 }
 
 
-void getdtablesize(void *arg){
-    struct PCB *curr = (struct PCB *)arg;
-    syscall_return(curr, 64);
-}
 
 void do_close(void *arg){
     struct PCB *curr = (struct PCB *)arg;
@@ -383,7 +379,7 @@ void do_wait(void *arg){
     //free its pid
     destroy_pid(child->pid);
     
-    free(child->registers);
+    free(child->my_registers);
     free_dllist(child->waiters);
     jrb_free_tree(child->children);
     free(child);
