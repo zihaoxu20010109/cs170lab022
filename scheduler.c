@@ -95,7 +95,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     /* need to back off from top of memory */
     /* 12 for argc, argv, envp */
     /* 12 for stack frame */
-    pcb->my_registers[StackReg] = tos;
+    pcb->my_registers[StackReg] = tos-12;
 
     return 0;
 }
@@ -105,7 +105,6 @@ void *initialize_user_process(void *arg)
     char **my_argv = (char **)arg;
     bzero(main_memory, MemorySize);
     User_Base = 0;
-    User_Limit -=12;
     struct PCB *my_pcb = (struct PCB *)malloc(sizeof(struct PCB));
     init=(struct PCB*)malloc(sizeof(struct PCB));
     int i;
