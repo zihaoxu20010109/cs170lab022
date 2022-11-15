@@ -99,15 +99,15 @@ void exceptionHandler(ExceptionType which)
 			DEBUG('e', "getdtablesize system call\n");
 			break;
 		case SYS_close:
-			kt_fork((void*)do_close, (void *)currProcess);
+			kt_fork((void*)do_close, (void *)curr);
 			DEBUG('e', "close system call\n");
 			break;
 		case SYS_getppid:
-			kt_fork((void*)get_ppid, (void *)currProcess);
+			kt_fork((void*)get_ppid, (void *)curr);
 			DEBUG('e', "getppid system call\n");
 			break;
 		case SYS_wait:
-			kt_fork((void*)do_wait, (void *)currProcess);
+			kt_fork((void*)do_wait, (void *)curr);
 			DEBUG('e', "wait system call\n");
 			break;
 		default:
