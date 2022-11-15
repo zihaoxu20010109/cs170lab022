@@ -29,6 +29,9 @@ extern void mydo_fork(void *arg);
 extern void *finish_fork(void *arg);
 extern void myown_exit(void *arg);
 extern bool empty_memory(int* ptr);
+extern void do_wait(void *arg);
+extern void do_close(void *arg);
+extern void get_ppid(void *arg);
 extern kt_sem writeok;
 extern Dllist readyq;
 #endif
