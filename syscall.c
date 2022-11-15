@@ -57,7 +57,7 @@ void *do_write(void *arg)
 
     P_kt_sem(writers);
     // pcb->my_registers[6]
-    int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory+curr->base); // convert the second arg into system address
+    int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory+pcb->base); // convert the second arg into system address
 
     int write_count = 0;
     char *chars = (char *)(my_local_reg6);
