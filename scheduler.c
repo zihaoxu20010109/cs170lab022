@@ -95,7 +95,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     /* need to back off from top of memory */
     /* 12 for argc, argv, envp */
     /* 12 for stack frame */
-    pcb->my_registers[StackReg] = User_Limit -12;
+    pcb->my_registers[StackReg] = tos;
 
     return 0;
 }
