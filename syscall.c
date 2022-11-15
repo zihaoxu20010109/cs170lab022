@@ -223,10 +223,6 @@ void do_execve(void *arg){
 
     char **array = malloc(numArgs * sizeof(char *));
     // printf("curr -> registers[5]: %s\n", curr -> registers[5] + main_memory + User_Base);
-    if (ValidAddress((void *)curr, (int)(curr->my_registers[6])) == 0)
-    {
-        syscall_return(curr, -1);
-    }
     //mallocing array, need to strdup each section
     char *fn = strdup(curr->my_registers[5] + main_memory + User_Base); //returns pointer to string
                                                                      //mallocs memory for new string
