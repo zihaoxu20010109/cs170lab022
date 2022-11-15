@@ -42,44 +42,58 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
         exit(1);
     }    
     pcb->sbrk_ptr=(void*)sbrk_ptr;
-    int tos, k, arg_v;
-    tos = User_Limit - 24;
-    int numArgs = 0;
-    int ptr[numArgs];
-	int j = 0;
-	for(int i = numArgs - 1; i >= 0; i--) {
-		tos -= (strlen(pcb_argv[i])+1);
-		strcpy(main_memory + User_Base + tos, pcb_argv[i]); //put strings in stack
-		ptr[j] = tos;
-		j++;
-	}
+    int size = 0;
+    while(pcb_argv[size]){
+        size++;
+    }
+    int tos, argv, k;
+    int argvptr[256];
+    int j;
+    tos = pcb->pcb_limit - 12 - 1024;
+    for(j = 0; j < size; j++){
+        tos -= (strlen(pcb_argv[j]) + 1);
+        while(tos%4 != 0){
+            tos--;
+        }
+        argvptr[j] = tos;
+        strcpy(main_memory+tos+pcb->pcb_base, pcb_argv[j]);
+    }
+    
 
-	while (tos % 4) {
-		tos--;
-	}
+    while (tos % 4) tos--;
 
-	tos -= 4;
-	k = 0;
-
-	memcpy(main_memory+tos + User_Base, &k, 4);
-
-	for(int i = 0; i < numArgs; i++) {
-		tos -= 4;
-		memcpy(main_memory+tos + User_Base, &ptr[i], 4);
-	}
-	arg_v = tos;
-
-	tos -= 4;
+    tos -= 4;
     k = 0;
-    memcpy(main_memory+tos + pcb -> base, &k, 4);
-  
-    tos -= 4;
-    memcpy(main_memory+tos + pcb -> base, &arg_v, 4);
-    tos -= 4;
-    k = numArgs;
-    memcpy(main_memory+tos + pcb -> base, &k, 4);
+    memcpy(main_memory+tos+pcb->pcb_base, &k, 4);
 
-    pcb -> my_registers[StackReg] = tos - 12;
+    for(int i = size - 1; i >= 0; i--){
+        tos -= 4;
+        memcpy(main_memory+tos+pcb->pcb_base, &argvptr[i], 4);
+    }
+
+    argv = tos;
+
+    //envp
+    tos -= 4;
+    k = 0;
+    memcpy(main_memory+tos+pcb->pcb_base, &k, 4);
+
+    //&argv
+    tos -= 4;
+    memcpy(main_memory+tos+pcb->pcb_base, &argv, 4);
+
+    //argc
+    tos -= 4;
+    k = size;
+    memcpy(main_memory+tos+pcb->pcb_base, &k, 4);	
+
+    tos -= 12;
+    memset(main_memory+tos+pcb->pcb_base, 0, 12);
+
+    /* need to back off from top of memory */
+    /* 12 for argc, argv, envp */
+    /* 12 for stack frame */
+    pcb->registers[StackReg] = tos;
 
     return 0;
 }
