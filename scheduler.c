@@ -52,9 +52,9 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     tos = User_Limit- 12 - 1024;
     for(int i = size - 1; i >= 0; i--){
         tos -= (strlen(pcb_argv[i]) + 1);
-        while(tos%4 != 0){
-           tos--;
-        }
+        //while(tos%4 != 0){
+        //   tos--;
+       //}
         argvptr[j] = tos;
         strcpy(main_memory+tos+pcb->base, pcb_argv[i]);
         j++;
@@ -67,10 +67,10 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     k = 0;
     memcpy(main_memory+tos+pcb->base, &k, 4);
 
-    for(int i = size - 1; i >= 0; i--){
-        tos -= 4;
-        memcpy(main_memory+tos+pcb->base, &argvptr[i], 4);
-    }
+    for(int i = 0; i < size; i++) {
+		tos -= 4;
+		memcpy(main_memory+tos + User_Base, &ptr[i], 4);
+	}
 
 
     argv = tos;
