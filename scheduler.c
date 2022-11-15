@@ -66,10 +66,10 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     k = 0;
     memcpy(main_memory+tos+pcb->base, &k, 4);
 
-    /*for(int i = size - 1; i >= 0; i--){
+    for(int i = size - 1; i >= 0; i--){
         tos -= 4;
         memcpy(main_memory+tos+pcb->base, &argvptr[i], 4);
-    }*/
+    }
 
     argv = tos;
 
@@ -87,13 +87,13 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     k = size;
     memcpy(main_memory+tos+pcb->base, &k, 4);	
 
-    tos -= 12;
-    memset(main_memory+tos+pcb->base, 0, 12);
+    //tos -= 12;
+    //memset(main_memory+tos+pcb->base, 0, 12);
 
     /* need to back off from top of memory */
     /* 12 for argc, argv, envp */
     /* 12 for stack frame */
-    pcb->my_registers[StackReg] = tos;
+    pcb->my_registers[StackReg] = tos-12;
 
     return 0;
 }
