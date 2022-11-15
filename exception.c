@@ -94,6 +94,22 @@ void exceptionHandler(ExceptionType which)
 			kt_fork((void*)mydo_fork, (void *)curr);
 			DEBUG('e', "do_fork system call\n");
 			break;
+		case SYS_getdtablesize:
+			kt_fork((void*)getdtablesize, (void *)curr);
+			DEBUG('e', "getdtablesize system call\n");
+			break;
+		case SYS_close:
+			kt_fork((void*)do_close, (void *)currProcess);
+			DEBUG('e', "close system call\n");
+			break;
+		case SYS_getppid:
+			kt_fork((void*)get_ppid, (void *)currProcess);
+			DEBUG('e', "getppid system call\n");
+			break;
+		case SYS_wait:
+			kt_fork((void*)do_wait, (void *)currProcess);
+			DEBUG('e', "wait system call\n");
+			break;
 		default:
 			DEBUG('e', "Unknown system call\n");
 			SYSHalt();
