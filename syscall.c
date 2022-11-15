@@ -332,37 +332,40 @@ void myown_exit(void *arg)
     memory_chunk[pcb->mem_int]=0;
     jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
 
-    while (!jrb_empty(pcb->children))
-    {
-        struct PCB *first = (struct PCB *)jval_v(jrb_val((jrb_first(pcb->children))));
-        jrb_delete_node(jrb_find_int(pcb->children, first->pid));
-        first->parent = init;
-        jrb_insert_int(init->children, first->pid, new_jval_v((void *)first));
+    JRB ptr;
+    jrb_traverse(ptr, pcb->children){
+        jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
+        struct PCB* temp = (struct PCB*)(ptr->val.v);
+        temp->parent = init;
+    }
+    jrb_free_tree(pcb->children);
+
+    if(!dll_empty(pcb->waiters)){
+        Dllist ptr;
+        dll_traverse(ptr, pcb->waiters){
+            struct PCB* child=(struct PCB*)(ptr->val.v);
+            dll_delete_node(ptr);
+            destroy_pid(child->pid);
+            for (int i=0; i<NumTotalRegs; ++i){
+                child->my_registers[i]=0;
+            }
+            free(child);
+        }
     }
 
-    // release and free all of curr's zombie children
-    while (!dll_empty(pcb->waiters))
-    {
-        struct PCB *child = (struct PCB *)(dll_val((dll_first(pcb->waiters))).v);
-        pcb->parent = init;
-        dll_append(init->waiters, dll_val(dll_first(pcb->waiters)));
-        dll_delete_node(dll_first(pcb->waiters));
-        V_kt_sem(init->waiters_sem);
-    }
-
-    Jval currVal = new_jval_v((void *)(pcb));
-    dll_append(pcb->parent->waiters, currVal);
-    // increment waiters_sem, or make parent closer to unblocking while waiting for its children to finish
-    V_kt_sem(pcb->parent->waiters_sem);
-
-    // if curr is a child of init, delete and free itself.
-    if (pcb->parent->pid == init->pid)
-    {
+    
+    
+    // printf("here we are\n");
+    if(pcb->parent == init){
         destroy_pid(pcb->pid);
-        free_dllist(pcb->waiters);
-        jrb_free_tree(pcb->children);
-        free(pcb->my_registers);
+        for (int i=0; i<NumTotalRegs; ++i){
+            pcb->my_registers[i]=0;
+        }
         free(pcb);
+    }else{
+        V_kt_sem(pcb->parent->waiters_sem);
+        dll_append(pcb->parent->waiters,new_jval_v((void*)pcb));
+        
     }
     kt_exit();
 }
