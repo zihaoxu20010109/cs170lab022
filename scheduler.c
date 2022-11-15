@@ -49,7 +49,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
 	int j = 0;
 	for(int i = numArgs - 1; i >= 0; i--) {
 		tos -= (strlen(pcb_argv[i])+1);
-		strcpy(main_memory + User_Base + tos, argv[i]); //put strings in stack
+		strcpy(main_memory + User_Base + tos, pcb_argv[i]); //put strings in stack
 		ptr[j] = tos;
 		j++;
 	}
