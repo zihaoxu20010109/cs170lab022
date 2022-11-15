@@ -42,12 +42,13 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
         exit(1);
     }    
     pcb->sbrk_ptr=(void*)sbrk_ptr;
-    tos = User_Limit - 24;
     int tos, k, arg_v;
+    tos = User_Limit - 24;
+    int numArgs = 0;
     int ptr[numArgs];
 	int j = 0;
 	for(int i = numArgs - 1; i >= 0; i--) {
-		tos -= (strlen(argv[i])+1);
+		tos -= (strlen(pcb_argv[i])+1);
 		strcpy(main_memory + User_Base + tos, argv[i]); //put strings in stack
 		ptr[j] = tos;
 		j++;
@@ -78,7 +79,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     k = numArgs;
     memcpy(main_memory+tos + pcb -> base, &k, 4);
 
-    pcb -> mt_registers[StackReg] = tos - 12;
+    pcb -> my_registers[StackReg] = tos - 12;
 
     return 0;
 }
