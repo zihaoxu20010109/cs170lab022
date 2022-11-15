@@ -55,8 +55,8 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
         //while(tos%4 != 0){
         //    tos--;
         //}
-        argvptr[j] = tos;
         strcpy(main_memory+tos+pcb->base, pcb_argv[j]);
+        argvptr[j] = tos;
     }
     
 
