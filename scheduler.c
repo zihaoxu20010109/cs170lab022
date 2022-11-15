@@ -42,60 +42,44 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
         exit(1);
     }    
     pcb->sbrk_ptr=(void*)sbrk_ptr;
-    int size = 0;
-    while(pcb_argv[size]){
-        size++;
-    }
-    int tos, argv, k;
-    int argvptr[256];
-    int j;
-    tos = pcb->limit - 12 - 1024;
-    for(j = 0; j < size; j++){
-        tos -= (strlen(pcb_argv[j]) + 1);
-        while(tos%4 != 0){
-            tos--;
-        }
-        argvptr[j] = tos;
-        strcpy(main_memory+tos+pcb->base, pcb_argv[j]);
-    }
-    
+    tos = User_Limit - 24;
+    int tos, k, arg_v;
+    int ptr[numArgs];
+	int j = 0;
+	for(int i = numArgs - 1; i >= 0; i--) {
+		tos -= (strlen(argv[i])+1);
+		strcpy(main_memory + User_Base + tos, argv[i]); //put strings in stack
+		ptr[j] = tos;
+		j++;
+	}
 
-    while (tos % 4) tos--;
+	while (tos % 4) {
+		tos--;
+	}
 
-    tos -= 4;
+	tos -= 4;
+	k = 0;
+
+	memcpy(main_memory+tos + User_Base, &k, 4);
+
+	for(int i = 0; i < numArgs; i++) {
+		tos -= 4;
+		memcpy(main_memory+tos + User_Base, &ptr[i], 4);
+	}
+	arg_v = tos;
+
+	tos -= 4;
     k = 0;
-    memcpy(main_memory+tos+pcb->base, &k, 4);
-
-    for(int i = size - 1; i >= 0; i--){
-        tos -= 4;
-        memcpy(main_memory+tos+pcb->base, &argvptr[i], 4);
-    }
-
-    argv = tos;
-
-    //envp
+    memcpy(main_memory+tos + pcb -> base, &k, 4);
+  
     tos -= 4;
-    k = 0;
-    memcpy(main_memory+tos+pcb->base, &k, 4);
-
-    //&argv
+    memcpy(main_memory+tos + pcb -> base, &arg_v, 4);
     tos -= 4;
-    memcpy(main_memory+tos+pcb->base, &argv, 4);
+    k = numArgs;
+    memcpy(main_memory+tos + pcb -> base, &k, 4);
 
-    //argc
-    tos -= 4;
-    k = size;
-    memcpy(main_memory+tos+pcb->base, &k, 4);	
+    pcb -> mt_registers[StackReg] = tos - 12;
 
-    tos -= 12;
-    memset(main_memory+tos+pcb->base, 0, 12);
-
-    /* need to back off from top of memory */
-    /* 12 for argc, argv, envp */
-    /* 12 for stack frame */
-    pcb->my_registers[StackReg] = tos;
-    
-    //pcb->my_registers[StackReg] = User_Limit - 12;
     return 0;
 }
 
