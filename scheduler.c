@@ -32,7 +32,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     }
     pcb->my_registers[PCReg] = 0;
     pcb->my_registers[NextPCReg] = 4;
-    pcb->base = pcb->mem_int*User_Limit;
+    pcb->base = User_Base;
     pcb->limit = User_Limit;
     pcb->waiters_sem=make_kt_sem(0);
     pcb->waiters=new_dllist();
