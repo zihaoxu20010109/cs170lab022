@@ -294,14 +294,14 @@ void mydo_fork(void *arg){
     job ->children = make_jrb();
     job->waiters_sem=make_kt_sem(0);
     job->waiters=new_dllist();
-    jrb_insert_int(job->children, job ->pid, new_jval_v((void*)job));
+    jrb_insert_int(pcb->children, job ->pid, new_jval_v((void*)job));
     // copy the registers.
     for (int i=0; i<NumTotalRegs; ++i){
         job ->my_registers[i]=pcb->my_registers[i];
     }
 
     // copy the memory.
-    memcpy(main_memory+job ->base,main_memory+pcb->base,User_Limit);
+    memcpy(main_memory+job ->base,main_memory+pcb->base,User_Limit-12);
 
     // fork the main process
     kt_fork(finish_fork, (void *)job );
