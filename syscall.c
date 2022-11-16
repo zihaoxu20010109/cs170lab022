@@ -290,7 +290,7 @@ void mydo_fork(void *arg){
     job ->mem_int=mem_int;
     //printf("mymeemorylockis %d ",job ->mem_int);
     memory_chunk[job ->mem_int]=1;
-    job ->parent=init;
+    job ->parent=pcb;
     job ->children = make_jrb();
     job->waiters_sem=make_kt_sem(0);
     job->waiters=new_dllist();
