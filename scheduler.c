@@ -66,7 +66,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
 
     while (tos % 4) tos--;
 
-   // tos -= 4;
+    tos -= 4;
     k = 0;
     memcpy(main_memory+tos+pcb->base, &k, 4);
 
@@ -80,21 +80,21 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     argv = tos;
 
     //envp
-    //tos -= 4;
+    tos -= 4;
     k = 0;
     memcpy(main_memory+tos+pcb->base, &k, 4);
 
     //&argv
-    //tos -= 4;
+    tos -= 4;
     memcpy(main_memory+tos+pcb->base, &argv, 4);
 
     //argc
-    //tos -= 4;
+    tos -= 4;
     k = size;
     memcpy(main_memory+tos+pcb->base, &k, 4);	
 
-    tos -= 12;
-    memset(main_memory+tos+pcb->base, 0, 12);
+    //tos -= 12;
+    //memset(main_memory+tos+pcb->base, 0, 12);
 
     /* need to back off from top of memory */
     /* 12 for argc, argv, envp */
