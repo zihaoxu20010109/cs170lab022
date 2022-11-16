@@ -361,10 +361,10 @@ void myown_exit(void *arg)
             pcb->my_registers[i]=0;
         }
         //free(pcb);
-   // }else{
+    }else{
         V_kt_sem(pcb->parent->waiters_sem);
         dll_append(pcb->parent->waiters,new_jval_v((void*)pcb)); 
-  //  }
+    }
     kt_exit();
 }
 
