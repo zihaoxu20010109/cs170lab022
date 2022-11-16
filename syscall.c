@@ -246,7 +246,7 @@ void do_execve(void *arg){
 
         char* c_ptr = main_memory+add+pcb->base;
         size = strlen(c_ptr);
-        while (main_memory[addr+pcb->pcb_base+size]!='\0' && main_memory[addr+pcb->pcb_base+size]!=' '){
+        while (main_memory[add+pcb->base+size]!='\0' && main_memory[add+pcb->base+size]!=' '){
              size++;
        }
    
