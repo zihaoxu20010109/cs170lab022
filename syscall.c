@@ -343,7 +343,7 @@ void myown_exit(void *arg)
     jrb_traverse(ptr, pcb->children){
         jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
         struct PCB* temp = (struct PCB*)(ptr->val.v);
-        temp->parent = init->pid);;
+        temp->parent = init->pid);
         printf("the value of init is %d",init->pid);
     }
     //jrb_free_tree(pcb->children);
