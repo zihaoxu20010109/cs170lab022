@@ -246,7 +246,9 @@ void do_execve(void *arg){
 
         char* c_ptr = main_memory+add+pcb->base;
         size = strlen(c_ptr);
-        
+        while (main_memory[addr+pcb->pcb_base+size]!='\0' && main_memory[addr+pcb->pcb_base+size]!=' '){
+             size++;
+       }
    
 
         char * temp= (char*)malloc((size+1)*sizeof(char));
@@ -254,6 +256,7 @@ void do_execve(void *arg){
             
             memcpy(temp+j,main_memory+pcb->base+add+j,1);
         }
+        
         temp[size]='\0';
         argv[i] = (char*)malloc((size+1)*sizeof(char));
         memcpy(argv[i],temp, size+1);
