@@ -124,7 +124,7 @@ void *initialize_user_process(void *arg)
     int wanted_pid = get_new_pid();
     my_pcb->pid = (unsigned short)wanted_pid;
     memory_chunk[1]=1;
-    my_pcb->mem_int=1;
+    my_pcb->mem_int=2;
     my_pcb->parent=init;
     my_pcb->children = make_jrb();
 
