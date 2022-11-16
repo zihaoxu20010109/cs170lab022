@@ -115,7 +115,7 @@ void *initialize_user_process(void *arg)
     for (i = 0; i < NumTotalRegs; i++)
         my_pcb->my_registers[i] = 0;
     init->pid=get_new_pid()-1;
-    printf("my value is %d, init->pid);
+    printf("my value is %d", init->pid);
     init->children = make_jrb();
     init->waiters_sem = make_kt_sem(0);
     init->waiters = new_dllist();
