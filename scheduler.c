@@ -50,7 +50,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     int tos, argv, k;
     int argvptr[256];
     
-    tos = User_Limit- 12;
+    tos = User_Limit- 12-1024;
     
     int j;
     for(j = 0; j < size; j++){
@@ -108,7 +108,7 @@ void *initialize_user_process(void *arg)
 {
     char **my_argv = (char **)arg;
     bzero(main_memory, MemorySize);
-    User_Base = 0;
+    User_Base = 1024;
     struct PCB *my_pcb = (struct PCB *)malloc(sizeof(struct PCB));
     init=(struct PCB*)malloc(sizeof(struct PCB));
     int i;
