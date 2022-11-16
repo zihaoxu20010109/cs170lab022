@@ -71,7 +71,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     memcpy(main_memory+tos+pcb->base, &k, 4);
 
     for(int i = size - 1; i >= 0; i--){
-        tos -= 4;
+        //tos -= 4;
         memcpy(main_memory+tos+pcb->base, &argvptr[i], 4);
     }
 
@@ -93,8 +93,8 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     k = size;
     memcpy(main_memory+tos+pcb->base, &k, 4);	
 
-    //tos -= 12;
-    //memset(main_memory+tos+pcb->base, 0, 12);
+    tos -= 12;
+    memset(main_memory+tos+pcb->base, 0, 12);
 
     /* need to back off from top of memory */
     /* 12 for argc, argv, envp */
