@@ -332,21 +332,14 @@ void myown_exit(void *arg)
 
     jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
     
-     /* while (!jrb_empty(pcb->children))
-    {
-        struct PCB *first = (struct PCB *)jval_v(jrb_val((jrb_first(pcb->children))));
-        jrb_delete_node(jrb_find_int(pcb->children, first->pid));
-        first->parent = init;
-        jrb_insert_int(init->children, first->pid, new_jval_v((void *)first));
-    }
-    /*
+  
+    
     JRB ptr;
     jrb_traverse(ptr, pcb->children){
         jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
         struct PCB* temp = (struct PCB*)(ptr->val.v);
         temp->parent = init;
     }
-    */
     jrb_free_tree(pcb->children);
 
     if(!dll_empty(pcb->waiters)){
@@ -363,7 +356,7 @@ void myown_exit(void *arg)
     }
 
     if(pcb->parent == init){
-        destroy_pid(pcb->pid);
+        //destroy_pid(pcb->pid);
         for (int i=0; i<NumTotalRegs; ++i){
             pcb->my_registers[i]=0;
         }
