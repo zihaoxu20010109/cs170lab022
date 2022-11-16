@@ -330,7 +330,10 @@ void myown_exit(void *arg)
     memory_chunk[pcb->mem_int]=0;
     memset(main_memory + pcb->base, 0, pcb->limit);
 
-    jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
+    if (curr->parent)
+    {
+        jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
+    }
     
   
     
