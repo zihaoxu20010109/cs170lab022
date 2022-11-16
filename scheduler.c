@@ -58,7 +58,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
         //while(tos%4 != 0){
         //    tos--;
        //}
-        argvptr[j] = tos-36;
+        argvptr[j] = tos;
         strcpy(main_memory+tos+pcb->base, pcb_argv[j]);
     }
     
@@ -164,11 +164,11 @@ void scheduler()
 }
 
 int get_new_pid(){
-    curpid =0;
-    while(jrb_find_int(rbtree, curpid)){
+    curpid =-1;
+    //while(jrb_find_int(rbtree, curpid)){
         curpid++;
-    }
-    jrb_insert_int(rbtree, curpid, JNULL);
+    //}
+    //jrb_insert_int(rbtree, curpid, JNULL);
     return curpid;
 }
 
