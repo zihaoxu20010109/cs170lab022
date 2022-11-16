@@ -327,46 +327,54 @@ bool empty_memory(int* ptr){
 
 void myown_exit(void *arg)
 {   
-    struct PCB *pcb=(struct PCB*)arg;
-    pcb->exit_value=pcb->my_registers[5];
+    struct PCB *curr=(struct PCB*)arg;
+    curr->exit_value=pcb->my_registers[5];
     memory_chunk[pcb->mem_int]=0;
     memset(main_memory + pcb->base, 0, pcb->limit);
 
-    if (pcb->parent)
+   if (curr->parent)
     {
-        jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
+        jrb_delete_node(jrb_find_int(curr->parent->children, curr->pid));
     }
-    
-  
-    
-    JRB ptr;
-    jrb_traverse(ptr, pcb->children){
-        jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
-        struct PCB* temp = (struct PCB*)(ptr->val.v);
-        temp->parent = init;
-        printf("the value of init is %d",init->pid);
-    }
-    //jrb_free_tree(pcb->children);
 
-   while (!dll_empty(pcb->waiters))
+    // setting exit value
+    curr->exitVal = curr->registers[5];
+    // adding itself to its parent's waiters, or zombie list
+
+    // move all of curr's children and make them init's children instead
+    while (!jrb_empty(curr->children))
     {
-        struct PCB *child = (struct PCB *)(dll_val((dll_first(pcb->waiters))).v);
+        struct PCB *first = (struct PCB *)jval_v(jrb_val((jrb_first(curr->children))));
+        jrb_delete_node(jrb_find_int(curr->children, first->pid));
+        first->parent = init;
+        jrb_insert_int(init->children, first->pid, new_jval_v((void *)first));
+    }
+
+    // release and free all of curr's zombie children
+    while (!dll_empty(curr->waiters))
+    {
+        struct PCB *child = (struct PCB *)(dll_val((dll_first(curr->waiters))).v);
         child->parent = init;
-        dll_append(init->waiters, dll_val(dll_first(pcb->waiters)));
-        dll_delete_node(dll_first(pcb->waiters));
+        dll_append(init->waiters, dll_val(dll_first(curr->waiters)));
+        dll_delete_node(dll_first(curr->waiters));
         V_kt_sem(init->waiters_sem);
     }
-    
-    if(pcb->parent == init){
-        destroy_pid(pcb->pid);
-        for (int i=0; i<NumTotalRegs; ++i){
-            pcb->my_registers[i]=0;
-        }
-        free(pcb);
-    }else{
-        V_kt_sem(pcb->parent->waiters_sem);
-        dll_append(pcb->parent->waiters,new_jval_v((void*)pcb)); 
+
+    Jval currVal = new_jval_v((void *)(curr));
+    dll_append(curr->parent->waiters, currVal);
+    // increment waiters_sem, or make parent closer to unblocking while waiting for its children to finish
+    V_kt_sem(curr->parent->waiters_sem);
+
+    // if curr is a child of init, delete and free itself.
+    if (curr->parent->pid == init->pid)
+    {
+        destroy_pid(curr->pid);
+        free_dllist(curr->waiters);
+        jrb_free_tree(curr->children);
+        free(curr->registers);
+        free(curr);
     }
+    //save exit value in PCB
     kt_exit();
 }
 
