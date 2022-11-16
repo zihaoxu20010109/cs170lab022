@@ -328,7 +328,7 @@ bool empty_memory(int* ptr){
 void myown_exit(void *arg)
 {   
     struct PCB *curr=(struct PCB*)arg;
-    curr->exit_value=pcb->my_registers[5];
+    curr->exit_value=curr->my_registers[5];
     memory_chunk[pcb->mem_int]=0;
     memset(main_memory + pcb->base, 0, pcb->limit);
 
