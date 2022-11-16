@@ -301,7 +301,7 @@ void mydo_fork(void *arg){
     }
 
     // copy the memory.
-    memcpy(main_memory+job ->base,main_memory+pcb->base,User_Limit-12);
+    memcpy(main_memory+job ->base,main_memory+pcb->base,User_Limit);
 
     // fork the main process
     kt_fork(finish_fork, (void *)job );
