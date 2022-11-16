@@ -275,39 +275,47 @@ void do_execve(void *arg){
 }
 
 void mydo_fork(void *arg){
-    struct PCB *pcb=(struct PCB*)arg;
-    int mem_int=0;
-    if (!empty_memory(&mem_int)){
-        syscall_return(pcb,-EAGAIN);
+     struct PCB *pcb=(struct PCB*)arg;
+    pcb->exit_value=pcb->my_registers[5];
+    memory_chunk[pcb->mem_int]=0;
+    memset(main_memory + pcb->base, 0, pcb->limit);
+
+    jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
+    
+  
+    
+    JRB ptr;
+    jrb_traverse(ptr, pcb->children){
+        jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
+        struct PCB* temp = (struct PCB*)(ptr->val.v);
+        temp->parent = init;
     }
-    struct PCB *job= (struct PCB*)malloc(sizeof(struct PCB));
+    jrb_free_tree(pcb->children);
 
-    // initialize all fields of job.
-    //job ->pid=get_new_pid();
-    job ->base=mem_int*User_Limit;
-    job ->limit=User_Limit;
-    job ->sbrk_ptr=pcb->sbrk_ptr;
-    job ->mem_int=mem_int;
-    //printf("mymeemorylockis %d ",job ->mem_int);
-    memory_chunk[job ->mem_int]=1;
-    job ->parent=pcb;
-    job ->children = make_jrb();
-    job ->pid=get_new_pid();
-    printf("mymeemorylockis %d ",pcb ->pid);
-    job->waiters_sem=make_kt_sem(0);
-    job->waiters=new_dllist();
-    jrb_insert_int(pcb->children, job ->pid, new_jval_v((void*)job));
-    // copy the registers.
-    for (int i=0; i<NumTotalRegs; ++i){
-        job ->my_registers[i]=pcb->my_registers[i];
+    if(!dll_empty(pcb->waiters)){
+        Dllist ptr;
+        dll_traverse(ptr, pcb->waiters){
+            struct PCB* child=(struct PCB*)(ptr->val.v);
+            dll_delete_node(ptr);
+            destroy_pid(child->pid);
+            for (int i=0; i<NumTotalRegs; ++i){
+                child->my_registers[i]=0;
+            }
+            free(child);
+        }
     }
-
-    // copy the memory.
-    memcpy(main_memory+job ->base,main_memory+pcb->base,User_Limit);
-
-    // fork the main process
-    kt_fork(finish_fork, (void *)job );
-    syscall_return(pcb,job ->pid);
+    
+    if(pcb->parent == init){
+        destroy_pid(pcb->pid);
+        for (int i=0; i<NumTotalRegs; ++i){
+            pcb->my_registers[i]=0;
+        }
+        free(pcb);
+    }else{
+        V_kt_sem(pcb->parent->waiters_sem);
+        dll_append(pcb->parent->waiters,new_jval_v((void*)pcb)); 
+    }
+    kt_exit();
 }
 
 void *finish_fork(void *arg){
