@@ -181,4 +181,7 @@ void destroy_pid(int pid){
         return;
     }
     jrb_delete_node(node);
+    if (pid < curpid) {
+			curpid = pid;
+		}
 }
