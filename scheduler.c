@@ -114,7 +114,7 @@ void *initialize_user_process(void *arg)
     int i;
     for (i = 0; i < NumTotalRegs; i++)
         my_pcb->my_registers[i] = 0;
-    init->pid=get_new_pid();
+    init->pid=0;
     init->children = make_jrb();
     init->waiters_sem = make_kt_sem(0);
     init->waiters = new_dllist();
