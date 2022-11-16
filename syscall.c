@@ -330,7 +330,6 @@ void myown_exit(void *arg)
     struct PCB *curr=(struct PCB*)arg;
     curr->exit_value=curr->my_registers[5];
     memory_chunk[curr->mem_int]=0;
-    memset(main_memory + curr->base, 0, curr->limit);
 
    if (curr->parent)
     {
