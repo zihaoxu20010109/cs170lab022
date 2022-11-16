@@ -51,7 +51,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     int tos, argv, k;
     int argvptr[256];
     
-    tos = User_Limit- 12-996;
+    tos = User_Limit- 12-984;
     
     int j;
     for(j = 0; j < size; j++){
