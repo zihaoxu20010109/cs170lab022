@@ -347,7 +347,6 @@ void myown_exit(void *arg)
     JRB ptr;
     jrb_traverse(ptr, pcb->children){
         struct PCB* first = (struct PCB *)jval_v(jrb_val((jrb_first(pcb->children))));
-        jrb_delete_node(jrb_find_int(pcb->children, first->pid));
         first->parent = init;
         jrb_insert_int(init->children, first->pid, new_jval_v((void *)first));
     }
