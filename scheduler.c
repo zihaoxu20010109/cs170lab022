@@ -167,7 +167,7 @@ void scheduler()
 }
 
 int get_new_pid(){
-    curpid = 0;
+    curpid = 1;
     while(jrb_find_int(rbtree, curpid)){
         curpid++;
     }
