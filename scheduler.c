@@ -166,11 +166,11 @@ void scheduler()
 }
 
 int get_new_pid(){
-    curpid =0;
+    curpid =-1;
+    jrb_insert_int(rbtree, curpid, JNULL);
     while(jrb_find_int(rbtree, curpid)){
         curpid++;
     }
-    jrb_insert_int(rbtree, curpid, JNULL);
     return curpid;
 }
 
