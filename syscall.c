@@ -293,7 +293,7 @@ void mydo_fork(void *arg){
     job ->parent=pcb;
     job ->children = make_jrb();
     job ->pid=get_new_pid();
-    printf("mymeemorylockis %d ",job ->pid);
+    printf("mymeemorylockis %d ",pcb ->pid);
     job->waiters_sem=make_kt_sem(0);
     job->waiters=new_dllist();
     jrb_insert_int(pcb->children, job ->pid, new_jval_v((void*)job));
