@@ -354,14 +354,13 @@ void myown_exit(void *arg)
             free(child);
         }
     }
-    /*
+    
     if(pcb->parent == init){
         destroy_pid(pcb->pid);
         for (int i=0; i<NumTotalRegs; ++i){
             pcb->my_registers[i]=0;
         }
-    */
-        free(pcb);
+        //free(pcb);
    // }else{
         V_kt_sem(pcb->parent->waiters_sem);
         dll_append(pcb->parent->waiters,new_jval_v((void*)pcb)); 
