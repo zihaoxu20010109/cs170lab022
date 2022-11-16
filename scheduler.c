@@ -128,7 +128,7 @@ void *initialize_user_process(void *arg)
 
     jrb_insert_int(init->children, my_pcb->pid, new_jval_v((void*)my_pcb));
     int execv = perform_execve(my_pcb, my_argv[0], my_argv);
-    InitUserArgs(my_pcb->my_registers, my_argv, User_Base);
+    InitUserArgs(my_pcb->my_registers, my_argv, User_Base+1024);
     if(execv == 0){
         dll_append(readyq,new_jval_v((void*)my_pcb));
         kt_exit();
