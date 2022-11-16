@@ -119,12 +119,12 @@ void *initialize_user_process(void *arg)
     init->children = make_jrb();
     init->waiters_sem = make_kt_sem(0);
     init->waiters = new_dllist();
-    
+    memory_chunk[0]=1;
+    init->mem_int =1;
     int wanted_pid = get_new_pid();
     my_pcb->pid = (unsigned short)wanted_pid;
-    //memory_chunk[0]=1;
-    //my_pcb->mem_int=0;
-
+    memory_chunk[1]=1;
+    my_pcb->mem_int=1;
     my_pcb->parent=init;
     my_pcb->children = make_jrb();
 
