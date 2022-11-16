@@ -344,7 +344,7 @@ void myown_exit(void *arg)
         struct PCB* temp = (struct PCB*)(ptr->val.v);
         temp->parent = init;
     }
-    jrb_free_tree(pcb->children);
+    //jrb_free_tree(pcb->children);
 
    while (!dll_empty(pcb->waiters))
     {
