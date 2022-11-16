@@ -17,7 +17,9 @@ void initialize_scheduler()
 {
     readyq = new_dllist();
     is_noop = TRUE;
+    
     create_memory();
+    User_Limit -= 2048/8;
     //printf("the value is %d", User_Limit);
     if (readyq == NULL)
     {
@@ -50,7 +52,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     int tos, argv, k;
     int argvptr[256];
     
-    tos = User_Limit- 12-1024;
+    tos = User_Limit- 12;
     
     int j;
     for(j = 0; j < size; j++){
