@@ -339,7 +339,7 @@ void myown_exit(void *arg)
         jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
         struct PCB* temp = (struct PCB*)(ptr->val.v);
         temp->parent = init;
-        print("the true value is %d",init->pid);
+        printf("the true value is %d",init->pid);
     }
     jrb_free_tree(pcb->children);
 
