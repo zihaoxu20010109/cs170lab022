@@ -260,10 +260,8 @@ void do_execve(void *arg){
         ptr+=4;
         free(temp);
     }
-    // }
     
     argv[num_str]=NULL;
-    
     
     int return_value = perform_execve(pcb, filename, argv);
     pcb->my_registers[2]=return_value;
@@ -330,6 +328,8 @@ void myown_exit(void *arg)
     struct PCB *pcb=(struct PCB*)arg;
     pcb->exit_value=pcb->my_registers[5];
     memory_chunk[pcb->mem_int]=0;
+    memset(main_memory + pcb->base, 0, pcb->limit);
+
     jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
 
     JRB ptr;
@@ -353,9 +353,6 @@ void myown_exit(void *arg)
         }
     }
 
-    
-    
-    // printf("here we are\n");
     if(pcb->parent == init){
         destroy_pid(pcb->pid);
         for (int i=0; i<NumTotalRegs; ++i){
@@ -364,8 +361,7 @@ void myown_exit(void *arg)
         free(pcb);
     }else{
         V_kt_sem(pcb->parent->waiters_sem);
-        dll_append(pcb->parent->waiters,new_jval_v((void*)pcb));
-        
+        dll_append(pcb->parent->waiters,new_jval_v((void*)pcb)); 
     }
     kt_exit();
 }
@@ -382,28 +378,27 @@ void get_ppid(void *arg){
     syscall_return(curr, curr->parent->pid);
 }
 
+
 void do_wait(void *arg){
     struct PCB *curr = (struct PCB *)arg;
+    JRB ptr = jrb_first(curr->children);
+    if(ptr == jrb_nil(curr->children) && dll_empty(curr->waiters)){
+        syscall_return(curr, -1);
+    }
     P_kt_sem(curr->waiters_sem);
 
     struct PCB *child = (struct PCB *)(jval_v((dll_val(dll_first(curr->waiters)))));
+    memcpy(&(main_memory[curr->my_registers[5]+ curr->base]),&(child->exit_value),sizeof(int));
     
-    //free its PCB
     dll_delete_node(dll_first(curr->waiters));
-
-    int exit = child->exit_value;
-    //free its pid
     destroy_pid(child->pid);
-    
-    free(child->my_registers);
-    free_dllist(child->waiters);
-    jrb_free_tree(child->children);
+    for (int i=0; i<NumTotalRegs; ++i){
+        child->my_registers[i]=0;
+    }
     free(child);
-
+    
     //SYSHalt();
-    //use child->pid or curr->pid?
     syscall_return(curr, child->pid);
 }
-
 
 

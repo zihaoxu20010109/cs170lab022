@@ -26,7 +26,6 @@ void initialize_scheduler()
 }
 
 int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
-    //ToDo: error handling
     for (int i=0; i<NumTotalRegs; ++i){
         pcb->my_registers[i]=0;
     }
@@ -36,19 +35,23 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     pcb->limit = User_Limit;
     pcb->waiters_sem=make_kt_sem(0);
     pcb->waiters=new_dllist();
-    int sbrk_ptr=load_user_program(pcb_argv[0]);
+
+    int sbrk_ptr=load_user_program(filename);
     if (sbrk_ptr < 0) {
         fprintf(stderr,"Can't load program.\n");
         exit(1);
     }    
     pcb->sbrk_ptr=(void*)sbrk_ptr;
+
     int size = 0;
     while(pcb_argv[size]){
         size++;
     }
     int tos, argv, k;
     int argvptr[256];
+    
     tos = User_Limit- 12 - 1024;
+    
     int j;
     for(j = 0; j < size; j++){
         tos -= (strlen(pcb_argv[j]) + 1);
@@ -95,6 +98,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     /* need to back off from top of memory */
     /* 12 for argc, argv, envp */
     /* 12 for stack frame */
+    //tos
     pcb->my_registers[StackReg] = tos;
 
     return 0;
@@ -130,7 +134,6 @@ void *initialize_user_process(void *arg)
     InitUserArgs(my_pcb->my_registers, my_argv, User_Base);
     if(execv == 0){
         dll_append(readyq,new_jval_v((void*)my_pcb));
-    
         kt_exit();
     }else{
         exit(1);
