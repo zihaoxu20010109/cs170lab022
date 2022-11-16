@@ -283,7 +283,7 @@ void mydo_fork(void *arg){
     struct PCB *job= (struct PCB*)malloc(sizeof(struct PCB));
 
     // initialize all fields of job.
-    job ->pid=get_new_pid();
+    job ->pid=get_new_pid()-1;
     job ->base=mem_int*User_Limit;
     job ->limit=User_Limit;
     job ->sbrk_ptr=pcb->sbrk_ptr;
