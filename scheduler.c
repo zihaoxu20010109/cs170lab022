@@ -54,11 +54,11 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     
     int j;
     for(j = 0; j < size; j++){
-        tos -= (strlen(pcb_argv[j]) + 0);
+        tos -= (strlen(pcb_argv[j]) + 1);
         //while(tos%4 != 0){
         //    tos--;
        //}
-        argvptr[j] = tos;
+        argvptr[j] = tos-36;
         strcpy(main_memory+tos+pcb->base, pcb_argv[j]);
     }
     
