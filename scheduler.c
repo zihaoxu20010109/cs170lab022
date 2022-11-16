@@ -111,7 +111,6 @@ void *initialize_user_process(void *arg)
     User_Base = 0;
     struct PCB *my_pcb = (struct PCB *)malloc(sizeof(struct PCB));
     init=(struct PCB*)malloc(sizeof(struct PCB));
-    curpid =-1;
     int i;
     for (i = 0; i < NumTotalRegs; i++)
         my_pcb->my_registers[i] = 0;
@@ -165,10 +164,11 @@ void scheduler()
 }
 
 int get_new_pid(){
-    //while(jrb_find_int(rbtree, curpid)){
+    curpid = 0;
+    while(jrb_find_int(rbtree, curpid)){
         curpid++;
-    //}
-    //jrb_insert_int(rbtree, curpid, JNULL);
+    }
+    jrb_insert_int(rbtree, curpid, JNULL);
     return curpid;
 }
 
