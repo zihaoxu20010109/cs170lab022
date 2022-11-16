@@ -335,7 +335,7 @@ bool empty_memory(int* ptr){
 
 void myown_exit(void *arg)
 {   
-    sstruct PCB *pcb=(struct PCB*)arg;
+    struct PCB *pcb=(struct PCB*)arg;
     pcb->exit_value=pcb->my_registers[5];
     memory_chunk[pcb->mem_int]=0;
     memset(main_memory + pcb->base, 0, pcb->limit);
@@ -347,7 +347,7 @@ void myown_exit(void *arg)
     JRB ptr;
     jrb_traverse(ptr, pcb->children){
         struct PCB* first = (struct PCB *)jval_v(jrb_val((jrb_first(pcb->children))));
-        jrb_delete_node(jrb_find_int(curr->children, first->pid));
+        jrb_delete_node(jrb_find_int(pcb->children, first->pid));
         first->parent = init;
         jrb_insert_int(init->children, first->pid, new_jval_v((void *)first));
     }
