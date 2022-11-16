@@ -347,24 +347,25 @@ void myown_exit(void *arg)
         dll_traverse(ptr, pcb->waiters){
             struct PCB* child=(struct PCB*)(ptr->val.v);
             dll_delete_node(ptr);
-            //destroy_pid(child->pid);
+            destroy_pid(child->pid);
             for (int i=0; i<NumTotalRegs; ++i){
                 child->my_registers[i]=0;
             }
             free(child);
         }
     }
-
+    /*
     if(pcb->parent == init){
-        //destroy_pid(pcb->pid);
+        destroy_pid(pcb->pid);
         for (int i=0; i<NumTotalRegs; ++i){
             pcb->my_registers[i]=0;
         }
+    */
         free(pcb);
-    }else{
+   // }else{
         V_kt_sem(pcb->parent->waiters_sem);
         dll_append(pcb->parent->waiters,new_jval_v((void*)pcb)); 
-    }
+  //  }
     kt_exit();
 }
 
