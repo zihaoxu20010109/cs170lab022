@@ -290,7 +290,7 @@ void mydo_fork(void *arg){
     job ->mem_int=mem_int;
     //printf("mymeemorylockis %d ",job ->mem_int);
     memory_chunk[job ->mem_int]=1;
-    job ->parent=pcb;
+    job ->parent=init;
     job ->children = make_jrb();
     job->waiters_sem=make_kt_sem(0);
     job->waiters=new_dllist();
@@ -339,7 +339,6 @@ void myown_exit(void *arg)
         jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
         struct PCB* temp = (struct PCB*)(ptr->val.v);
         temp->parent = init;
-        printf("the true value is %d",init->pid);
     }
     jrb_free_tree(pcb->children);
 
@@ -352,7 +351,7 @@ void myown_exit(void *arg)
             for (int i=0; i<NumTotalRegs; ++i){
                 child->my_registers[i]=0;
             }
-            //free(child);
+            free(child);
         }
     }
     
@@ -361,7 +360,7 @@ void myown_exit(void *arg)
         for (int i=0; i<NumTotalRegs; ++i){
             pcb->my_registers[i]=0;
         }
-        //free(pcb);
+        free(pcb);
     }else{
         V_kt_sem(pcb->parent->waiters_sem);
         dll_append(pcb->parent->waiters,new_jval_v((void*)pcb)); 
