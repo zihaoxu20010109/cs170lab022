@@ -114,15 +114,14 @@ void *initialize_user_process(void *arg)
     int i;
     for (i = 0; i < NumTotalRegs; i++)
         my_pcb->my_registers[i] = 0;
-    init->pid=get_new_pid()-1;
-    printf("my value is %d", init->pid);
+    init->pid=get_new_pid();
     init->children = make_jrb();
     init->waiters_sem = make_kt_sem(0);
     init->waiters = new_dllist();
     
     int wanted_pid = get_new_pid();
     my_pcb->pid = (unsigned short)wanted_pid;
-
+    printf("my value is %d", my_pcb->pid);
     memory_chunk[0]=1;
     my_pcb->mem_int=0;
 
@@ -168,7 +167,7 @@ void scheduler()
 }
 
 int get_new_pid(){
-    curpid = 1;
+    curpid =0;
     while(jrb_find_int(rbtree, curpid)){
         curpid++;
     }
