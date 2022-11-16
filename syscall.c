@@ -345,18 +345,13 @@ void myown_exit(void *arg)
     }
     jrb_free_tree(pcb->children);
 
-    if(!dll_empty(pcb->waiters)){
-        Dllist ptr;
-        dll_traverse(ptr, pcb->waiters){
-            struct PCB* child=(struct PCB*)(ptr->val.v);
-            dll_delete_node(ptr);
-            child->parent = init;
-            destroy_pid(child->pid);
-            for (int i=0; i<NumTotalRegs; ++i){
-                child->my_registers[i]=0;
-            }
-            free(child);
-        }
+   while (!dll_empty(pcb->waiters))
+    {
+        struct PCB *child = (struct PCB *)(dll_val((dll_first(pcb->waiters))).v);
+        child->parent = init;
+        dll_append(init->waiters, dll_val(dll_first(pcb->waiters)));
+        dll_delete_node(dll_first(pcb->waiters));
+        V_kt_sem(init->waiters_sem);
     }
     
     if(pcb->parent == init){
