@@ -31,7 +31,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
         pcb->my_registers[i]=0;
     }
     pcb->my_registers[PCReg] = 0;
-    pcb->my_registers[NextPCReg] = 4;
+    pcb->my_registers[NextPCReg] = 0;
     pcb->base = User_Base;
     pcb->limit = User_Limit;
     pcb->waiters_sem=make_kt_sem(0);
