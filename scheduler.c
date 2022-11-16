@@ -18,8 +18,7 @@ void initialize_scheduler()
     readyq = new_dllist();
     is_noop = TRUE;
     
-    create_memory();
-    User_Limit -= 2048/8;
+    create_memory();;
     //printf("the value is %d", User_Limit);
     if (readyq == NULL)
     {
