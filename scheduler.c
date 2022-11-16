@@ -125,7 +125,7 @@ void *initialize_user_process(void *arg)
     my_pcb->mem_int=0;
 
     my_pcb->parent=init;
-    //my_pcb->children = make_jrb();
+    my_pcb->children = make_jrb();
 
 
     jrb_insert_int(init->children, my_pcb->pid, new_jval_v((void*)my_pcb));
