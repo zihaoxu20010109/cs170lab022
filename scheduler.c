@@ -121,7 +121,6 @@ void *initialize_user_process(void *arg)
     
     int wanted_pid = get_new_pid();
     my_pcb->pid = (unsigned short)wanted_pid;
-    printf("my value is %d", my_pcb->pid);
     memory_chunk[0]=1;
     my_pcb->mem_int=0;
 
