@@ -80,16 +80,16 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     argv = tos;
 
     //envp
-    tos -= 4;
+    //tos -= 4;
     k = 0;
     memcpy(main_memory+tos+pcb->base, &k, 4);
 
     //&argv
-    tos -= 4;
+    //tos -= 4;
     memcpy(main_memory+tos+pcb->base, &argv, 4);
 
     //argc
-    tos -= 4;
+    //tos -= 4;
     k = size;
     memcpy(main_memory+tos+pcb->base, &k, 4);	
 
