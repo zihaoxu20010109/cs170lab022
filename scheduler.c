@@ -86,7 +86,7 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
 
     //&argv
     tos -= 40;
-    memcpy(main_memory+tos+pcb->base, &argv, 40);
+    memcpy(main_memory+tos+pcb->base, &argv, 4);
 
     //argc
     tos -= 4;
