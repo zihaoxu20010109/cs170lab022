@@ -346,9 +346,9 @@ void myown_exit(void *arg)
     
     JRB ptr;
     jrb_traverse(ptr, pcb->children){
-        struct PCB* first = (struct PCB *)jval_v(jrb_val((jrb_first(pcb->children))));
-        first->parent = init;
-        jrb_insert_int(init->children, first->pid, new_jval_v((void *)first));
+        jrb_insert_int(init->children, jval_i(ptr->key), ptr->val);
+        struct PCB* temp = (struct PCB*)(ptr->val.v);
+        temp->parent = init;
     }
     jrb_free_tree(pcb->children);
 
