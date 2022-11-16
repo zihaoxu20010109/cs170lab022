@@ -332,7 +332,7 @@ void myown_exit(void *arg)
 
     jrb_delete_node(jrb_find_int(pcb->parent->children, pcb->pid));
     
-     while (!jrb_empty(pcb->children))
+     /* while (!jrb_empty(pcb->children))
     {
         struct PCB *first = (struct PCB *)jval_v(jrb_val((jrb_first(pcb->children))));
         jrb_delete_node(jrb_find_int(pcb->children, first->pid));
