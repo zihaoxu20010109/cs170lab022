@@ -338,7 +338,7 @@ void myown_exit(void *arg)
     }
 
     // setting exit value
-    curr->exitVal = curr->registers[5];
+    curr->exit_value = curr->my_registers[5];
     // adding itself to its parent's waiters, or zombie list
 
     // move all of curr's children and make them init's children instead
@@ -371,7 +371,7 @@ void myown_exit(void *arg)
         destroy_pid(curr->pid);
         free_dllist(curr->waiters);
         jrb_free_tree(curr->children);
-        free(curr->registers);
+        free(curr->my_registers);
         free(curr);
     }
     //save exit value in PCB
