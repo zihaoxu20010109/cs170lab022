@@ -34,10 +34,6 @@ int perform_execve(struct PCB* pcb, char* filename, char** pcb_argv){
     pcb->my_registers[NextPCReg] = 4;
     pcb->base = User_Base;
     pcb->limit = User_Limit;
-    pcb->waiters_sem=make_kt_sem(0);
-    pcb->waiters=new_dllist();
-    int wanted_pid = get_new_pid();
-    pcb->pid = (unsigned short)wanted_pid;
     int sbrk_ptr=load_user_program(filename);
     if (sbrk_ptr < 0) {
         fprintf(stderr,"Can't load program.\n");
@@ -124,6 +120,10 @@ void *initialize_user_process(void *arg)
     my_pcb->mem_int=1;
     my_pcb->parent=init;
     my_pcb->children = make_jrb();
+    my_pcb->waiters_sem=make_kt_sem(0);
+    my_pcb->waiters=new_dllist();
+    int wanted_pid = get_new_pid();
+    my_pcb->pid = (unsigned short)wanted_pid;
 
 
     jrb_insert_int(init->children, my_pcb->pid, new_jval_v((void*)my_pcb));
