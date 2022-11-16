@@ -211,49 +211,67 @@ void getpid(void *arg){
 
 
 void do_execve(void *arg){
-    struct PCB *curr = (struct PCB *)arg;
+    struct PCB *pcb=(struct PCB*)arg;
 
-    char **argv = (char **)(curr->my_registers[6] + main_memory + User_Base);
-    int numArgs = 0;
-    while (argv[numArgs] != NULL)
-    {
-        numArgs++;
+    int arg_size = 0;
+    while(main_memory[pcb->my_registers[5]+pcb->base+arg_size]){
+        arg_size++;
     }
-    numArgs++;
-
-    char **array = malloc(numArgs * sizeof(char *));
-    // printf("curr -> registers[5]: %s\n", curr -> registers[5] + main_memory + User_Base);
-    //mallocing array, need to strdup each section
-    char *fn = strdup(curr->my_registers[5] + main_memory + User_Base); //returns pointer to string
-                                                                     //mallocs memory for new string
-                                                                     //copies new string into allocated space
-                                                                     //increment r6 by 4 to get address of next pointer
-                                                                     //insert into array (loop, strdp it)
-                                                                     //do r6 + main_memory + 4
-
-    int *offset; // gets the offset to access args in  argArr
-    char *argArr;
-    int j = 0;
-    for (int i = 0; i < numArgs - 1; i++)
-    {
-        offset = (int *)((int)(curr->my_registers[6]) + User_Base + (int)main_memory + j);
-        argArr = (char *)(*offset + main_memory + User_Base);
-        array[i] = strdup(argArr);
-        j += 4;
+    char* filename = (char *)malloc((arg_size+1)*sizeof(char));
+    for(int i = 0; i < arg_size; i++){
+        strncpy(filename+i, main_memory+pcb->my_registers[5]+pcb->base+i, 1);
     }
-    array[numArgs - 1] = '\0';
-    int result = perform_execve(curr, fn, array);
+    filename[arg_size] = '\0';
 
-    // curr -> registers[NextPCReg] = 0;
+    int num_str=0;
+    int ptr=pcb->my_registers[6]+pcb->base;
+    while (TRUE){
+        int add= main_memory[ptr] +(main_memory[ptr+1]<<8)+ (main_memory[ptr+2]<<16)+ (main_memory[ptr+3]<<24);
 
-    free(fn);
-    free(array);
-    if (result == 0)
-    {
-        syscall_return(curr, 0);
+        if (add == 0 || add > pcb->base+User_Limit){
+            break;
+        }
+        num_str++;
+        ptr+=4;
     }
+    char** argv = (char**)malloc((num_str+1) * sizeof(char*));
+    ptr=pcb->my_registers[6]+pcb->base;
+    
+    for (int i=0; i<num_str; ++i){
+        int size=0;
+        int add= main_memory[ptr] +
+        (main_memory[ptr+1]<<8)+
+        (main_memory[ptr+2]<<16)+
+        (main_memory[ptr+3]<<24);
 
-    syscall_return(curr, EINVAL);
+        char* c_ptr = main_memory+add+pcb->base;
+        size = strlen(c_ptr);
+        
+   
+
+        char * temp= (char*)malloc((size+1)*sizeof(char));
+        for (int j=0; j<size; ++j){
+            
+            memcpy(temp+j,main_memory+pcb->base+add+j,1);
+        }
+        temp[size]='\0';
+        argv[i] = (char*)malloc((size+1)*sizeof(char));
+        memcpy(argv[i],temp, size+1);
+        ptr+=4;
+        free(temp);
+    }
+    
+    argv[num_str]=NULL;
+    
+    int return_value = perform_execve(pcb, filename, argv);
+    pcb->my_registers[2]=return_value;
+    dll_append(readyq,new_jval_v((void *)pcb));
+    for(int i = 0; i< num_str; i++){
+        free(argv[i]);    
+    }
+    free(argv);
+    free(filename);
+    kt_exit();
 }
 
 void mydo_fork(void *arg){
