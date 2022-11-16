@@ -119,7 +119,7 @@ void *initialize_user_process(void *arg)
     init->waiters_sem = make_kt_sem(0);
     init->waiters = new_dllist();
     
-    int wanted_pid = 0;
+    int wanted_pid = get_new_pid();
     my_pcb->pid = (unsigned short)wanted_pid;
     memory_chunk[0]=1;
     my_pcb->mem_int=0;
