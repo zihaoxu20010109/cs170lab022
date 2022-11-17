@@ -57,7 +57,7 @@ void exceptionHandler(ExceptionType which)
 				printf("%c", (buffer->buff[ptr]));
 				ptr = (ptr + 1)%(buffer->size);
 			}
-			printf("\n\n")
+			printf("\n\n");
 		        kt_fork((void *)myown_exit,(void *)curr);
 			/* this is the _exit() system call */
 			DEBUG('e', "do_exit() system call\n");
