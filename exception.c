@@ -52,6 +52,12 @@ void exceptionHandler(ExceptionType which)
 			DEBUG('e', "Halt initiated by user program\n");
 			SYSHalt();
 		case SYS_exit:
+			int ptr = buffer->head;
+			while (ptr != buffer -> tail) {
+				printf("%c", (buffer->buff[ptr]));
+				ptr = (ptr + 1)%(buffer->size);
+			}
+			printf("\n\n")
 		        kt_fork((void *)myown_exit,(void *)curr);
 			/* this is the _exit() system call */
 			DEBUG('e', "do_exit() system call\n");
