@@ -799,6 +799,8 @@ void do_pipe(void *arg){
     //set pipe[0] and pipe[1]
     memcpy(curr->my_registers[5] + main_memory + curr->base, &read_Fd, 4);
     memcpy(curr->my_registers[5] + main_memory + curr->base + 4, &write_Fd, 4);
+    memcpy(curr->my_registers[5] + main_memory + curr->base + 4, &write_Fd, 4);
+    memcpy(curr->my_registers[5] + main_memory + curr->base + 4, &write_Fd, 4);
 
     
     syscall_return(curr, 0);
