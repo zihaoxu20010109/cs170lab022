@@ -137,7 +137,8 @@ void *do_write(void *arg)
             if(pcb->fd[file_d_num]->my_pipe->read_count==0){
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
-                syscall_return(pcb, -EBADF);
+                //broken pipe error
+                syscall_return(pcb, -EPIPE);
             }
             V_kt_sem(pcb->fd[file_d_num]->my_pipe->nelement);
 
@@ -559,6 +560,28 @@ void do_exit(void *arg){
 
     //clean up
     if(curr->parent->pid == 0){
+        //    //close related fd table
+        // for (int i = 0; i < 64; i++){
+        //     if(curr->fd[i]->console==FALSE){
+        //         if(curr->fd[i]->open==TRUE){
+        //             if(curr->fd[i]->isread==TRUE){
+        //                 curr->fd[i]->my_pipe->read_count -= 1;
+        //                 //curr->fd[i]->reference_count -= 1;
+        //             }else{
+        //                 curr->fd[i]->my_pipe->write_count-= 1;
+        //                 //curr->fd[i]->reference_count -= 1;
+        //             }
+
+        //             if(curr->fd[i]->my_pipe->read_count == 0 && curr->fd[i]->my_pipe->write_count==0){
+        //                 free(curr->fd[i]->my_pipe);
+        //             }
+
+        //             curr->fd[i]->open = FALSE;
+        //         }
+        //     }
+        //     //free(curr->fd[i]);
+        // }
+
         //if parent is init
         for (int i = 0; i < NumTotalRegs; i++){
             curr->my_registers[i] = 0;
@@ -639,6 +662,25 @@ void do_wait(void * arg){
     }
     jrb_free_tree(completed_child->children);
     free_dllist(completed_child->waiters);
+
+    // for (int i = 0; i < 64; i++){
+    //     if(completed_child->fd[i]->console==FALSE){
+    //         if(completed_child->fd[i]->open==TRUE){
+    //             if(completed_child->fd[i]->isread==TRUE){
+    //                 completed_child->fd[i]->my_pipe->read_count -= 1;
+    //             }else{
+    //                 completed_child->fd[i]->my_pipe->write_count-= 1;
+    //             }
+
+    //             if(completed_child->fd[i]->my_pipe->read_count == 0 && completed_child->fd[i]->my_pipe->write_count==0){
+    //                 free(completed_child->fd[i]->my_pipe);
+    //             }
+
+    //             completed_child->fd[i]->open = FALSE;
+    //         }
+    //     }
+    //     //free(curr->fd[i]);
+    // }
 
     int child_id = completed_child->pid;
     free(completed_child);
@@ -799,12 +841,8 @@ void do_pipe(void *arg){
     //set pipe[0] and pipe[1]
     memcpy(curr->my_registers[5] + main_memory + curr->base, &read_Fd, 4);
     memcpy(curr->my_registers[5] + main_memory + curr->base + 4, &write_Fd, 4);
-    memcpy(curr->my_registers[5] + main_memory + curr->base + 4, &write_Fd, 4);
-    memcpy(curr->my_registers[5] + main_memory + curr->base + 4, &write_Fd, 4);
 
     
     syscall_return(curr, 0);
 }
-
-
 
