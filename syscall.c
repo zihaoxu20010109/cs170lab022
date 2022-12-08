@@ -662,7 +662,7 @@ void do_wait(void * arg){
     }
     jrb_free_tree(completed_child->children);
     free_dllist(completed_child->waiters);
-
+    memcpy(&main_memory[pcb->User_Base+curr->my_register[5]], &completed_child->exit_value, sizeof(completed_child->exit_value));
     // for (int i = 0; i < 64; i++){
     //     if(completed_child->fd[i]->console==FALSE){
     //         if(completed_child->fd[i]->open==TRUE){
@@ -684,7 +684,7 @@ void do_wait(void * arg){
 
     int child_id = completed_child->pid;
     free(completed_child);
-
+	
 
     syscall_return(curr, child_id);
 
