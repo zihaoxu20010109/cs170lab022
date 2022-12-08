@@ -662,7 +662,7 @@ void do_wait(void * arg){
     }
     jrb_free_tree(completed_child->children);
     free_dllist(completed_child->waiters);
-    memcpy(&main_memory[curr->base+curr->my_registers[5], &completed_child->exit_value, sizeof(completed_child->exit_value));
+    memcpy(&main_memory[curr->base+curr->my_registers[5]], &completed_child->exit_value, sizeof(completed_child->exit_value));
     // for (int i = 0; i < 64; i++){
     //     if(completed_child->fd[i]->console==FALSE){
     //         if(completed_child->fd[i]->open==TRUE){
