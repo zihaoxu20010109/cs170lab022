@@ -131,7 +131,9 @@ void scheduler(){
     kt_joinall();
 
     if(dll_empty(readyq)){
+        //printf("I'm batman!!!\n");
         if(jrb_empty(init->children)){
+            //printf("I'm groot!!!\n");
             SYSHalt();
         }
         curr = NULL;
@@ -182,4 +184,6 @@ void destroy_pid(int pid){
     }
     jrb_delete_node(node);
 }
+
+
 
