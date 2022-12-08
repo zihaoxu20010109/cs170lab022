@@ -561,26 +561,26 @@ void do_exit(void *arg){
     //clean up
     if(curr->parent->pid == 0){
         //    //close related fd table
-        // for (int i = 0; i < 64; i++){
-        //     if(curr->fd[i]->console==FALSE){
-        //         if(curr->fd[i]->open==TRUE){
-        //             if(curr->fd[i]->isread==TRUE){
-        //                 curr->fd[i]->my_pipe->read_count -= 1;
-        //                 //curr->fd[i]->reference_count -= 1;
-        //             }else{
-        //                 curr->fd[i]->my_pipe->write_count-= 1;
-        //                 //curr->fd[i]->reference_count -= 1;
-        //             }
+         for (int i = 0; i < 64; i++){
+             if(curr->fd[i]->console==FALSE){
+               if(curr->fd[i]->open==TRUE){
+                     if(curr->fd[i]->isread==TRUE){
+                         curr->fd[i]->my_pipe->read_count -= 1;
+                         //curr->fd[i]->reference_count -= 1;
+                    }else{
+                         curr->fd[i]->my_pipe->write_count-= 1;
+                         //curr->fd[i]->reference_count -= 1;
+                     }
 
-        //             if(curr->fd[i]->my_pipe->read_count == 0 && curr->fd[i]->my_pipe->write_count==0){
-        //                 free(curr->fd[i]->my_pipe);
-        //             }
+                     if(curr->fd[i]->my_pipe->read_count == 0 && curr->fd[i]->my_pipe->write_count==0){
+                         free(curr->fd[i]->my_pipe);
+                     }
 
-        //             curr->fd[i]->open = FALSE;
-        //         }
-        //     }
-        //     //free(curr->fd[i]);
-        // }
+                     curr->fd[i]->open = FALSE;
+                 }
+             }
+             free(curr->fd[i]);
+        }
 
         //if parent is init
         for (int i = 0; i < NumTotalRegs; i++){
@@ -663,7 +663,7 @@ void do_wait(void * arg){
     jrb_free_tree(completed_child->children);
     free_dllist(completed_child->waiters);
 
-     for (int i = 0; i < 64; i++){
+    /* for (int i = 0; i < 64; i++){
         if(completed_child->fd[i]->console==FALSE){
              if(completed_child->fd[i]->open==TRUE){
                  if(completed_child->fd[i]->isread==TRUE){
@@ -680,8 +680,8 @@ void do_wait(void * arg){
              }
          }
          free(curr->fd[i]);
-     }
-
+     }*/
+	
     int child_id = completed_child->pid;
     free(completed_child);
 
