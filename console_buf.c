@@ -39,4 +39,4 @@ void cons_to_buff(struct console_buf* buffer) {
         buffer -> tail = (buffer -> tail + 1)%(buffer->size);
     }
     //kt_exit();
-}
+} 
