@@ -663,24 +663,24 @@ void do_wait(void * arg){
     jrb_free_tree(completed_child->children);
     free_dllist(completed_child->waiters);
 
-    // for (int i = 0; i < 64; i++){
-    //     if(completed_child->fd[i]->console==FALSE){
-    //         if(completed_child->fd[i]->open==TRUE){
-    //             if(completed_child->fd[i]->isread==TRUE){
-    //                 completed_child->fd[i]->my_pipe->read_count -= 1;
-    //             }else{
-    //                 completed_child->fd[i]->my_pipe->write_count-= 1;
-    //             }
+     for (int i = 0; i < 64; i++){
+        if(completed_child->fd[i]->console==FALSE){
+             if(completed_child->fd[i]->open==TRUE){
+                 if(completed_child->fd[i]->isread==TRUE){
+                     completed_child->fd[i]->my_pipe->read_count -= 1;
+                }else{
+                     completed_child->fd[i]->my_pipe->write_count-= 1;
+                 }
 
-    //             if(completed_child->fd[i]->my_pipe->read_count == 0 && completed_child->fd[i]->my_pipe->write_count==0){
-    //                 free(completed_child->fd[i]->my_pipe);
-    //             }
+                 if(completed_child->fd[i]->my_pipe->read_count == 0 && completed_child->fd[i]->my_pipe->write_count==0){
+                     free(completed_child->fd[i]->my_pipe);
+                }
 
-    //             completed_child->fd[i]->open = FALSE;
-    //         }
-    //     }
-    //     //free(curr->fd[i]);
-    // }
+                 completed_child->fd[i]->open = FALSE;
+             }
+         }
+         free(curr->fd[i]);
+     }
 
     int child_id = completed_child->pid;
     free(completed_child);
