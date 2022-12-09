@@ -3,6 +3,7 @@
 #include "console_buf.h"
 #include "kt.h"
 #include "scheduler.h"
+#include "jval.h"
 
 kt_sem nelem;
 kt_sem nslots;
@@ -32,7 +33,8 @@ void cons_to_buff(struct console_buf* buffer) {
         P_kt_sem(nslots);
         char c = (char)console_read();
         V_kt_sem(nelem);
-
+        Jval val = new_jval_i(c);
+        dll_append(buffer, val);
         buffer -> buff[(buffer -> tail)%(buffer->size)] = c;
         //increment the tail of buffer by 1
         //The tail and head will be checked by semaphore
