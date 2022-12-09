@@ -178,6 +178,5 @@ void interruptHandler(IntType which)
 		//scheduler();
 		break;
 	}
-	kt_fork((void *)handle_interrupt,(void *)curr);
 	scheduler();
 }
