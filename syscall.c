@@ -148,7 +148,7 @@ void *do_write(void *arg)
         pcb->fd[file_d_num]->my_pipe->writer_in_use += write_count;
 
         V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
-        
+        V_kt_sem(writers);
 
         syscall_return(pcb, write_count);
     }
