@@ -646,7 +646,9 @@ void do_close(void * arg){
 
 void do_wait(void * arg){
     struct PCB *curr=(struct PCB*)arg;
-
+    if (jrb_empty(curr->children)) {
+			SYSHalt();
+		}
     P_kt_sem(curr->waiters_sem);
     
     struct PCB *completed_child = (struct PCB *)(jval_v((dll_val(dll_first(curr->waiters)))));
@@ -683,10 +685,6 @@ void do_wait(void * arg){
 
     int child_id = completed_child->pid;
     free(completed_child);
-
-    if (jrb_empty(completed_child->children)) {
-			SYSHalt();
-		}
     syscall_return(curr, child_id);
 
     //SYSHalt();
