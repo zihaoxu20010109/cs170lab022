@@ -559,7 +559,7 @@ void do_exit(void *arg){
     }
 
     //clean up
-    if(curr->parent->pid == 0){
+    if(curr->parent->pid == 1){
         //    //close related fd table
         // for (int i = 0; i < 64; i++){
         //     if(curr->fd[i]->console==FALSE){
@@ -647,7 +647,6 @@ void do_close(void * arg){
 }
 
 void do_wait(void * arg){
-	SYSHalt();
     struct PCB *curr=(struct PCB*)arg;
 
     P_kt_sem(curr->waiters_sem);
