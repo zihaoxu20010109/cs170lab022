@@ -524,7 +524,7 @@ void do_exit(void *arg){
 	dll_traverse(tmp_zombie, pcb->waiters){
 		tmp_pcb = (PCB*)jval_v(dll_val(tmp_zombie));
 		destroy_pid(tmp_pcb->pid);
-		destroy_pcb(tmp_pcb);
+		free(tmp_pcb);
 	}
     while (!jrb_empty(curr->children)){
         struct PCB *pcb = (struct PCB *)jval_v(jrb_val(jrb_first(curr->children)));
