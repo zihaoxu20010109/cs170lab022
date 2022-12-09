@@ -845,3 +845,6 @@ void do_pipe(void *arg){
     
     syscall_return(curr, 0);
 }
+void handle_interrupt(struct PCB *pcb){
+	DEBUG('e', "Interrupt handler (separate thread)");
+}
