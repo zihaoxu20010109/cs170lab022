@@ -559,7 +559,7 @@ void do_exit(void *arg){
     }
 
     //clean up
-    if(curr->parent->pid == 1){
+    if(curr->parent->pid == 0){
         //    //close related fd table
         // for (int i = 0; i < 64; i++){
         //     if(curr->fd[i]->console==FALSE){
@@ -586,11 +586,11 @@ void do_exit(void *arg){
         for (int i = 0; i < NumTotalRegs; i++){
             curr->my_registers[i] = 0;
         }
+	SYSHalt();
         destroy_pid(curr->pid);
         jrb_free_tree(curr->children);
         free_dllist(curr->waiters);
         free(curr);			
-	SYSHalt();
     }else{
         V_kt_sem(curr->parent->waiters_sem);
         dll_append(curr->parent->waiters, new_jval_v((void*)curr));
