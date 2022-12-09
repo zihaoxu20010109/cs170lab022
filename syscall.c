@@ -684,9 +684,8 @@ void do_wait(void * arg){
     int child_id = completed_child->pid;
     free(completed_child);
 
-    if (jrb_empty(curr->children)) {
-			SYSHalt();
-		}
+ 
+	SYSHalt();
     syscall_return(curr, child_id);
 
     //SYSHalt();
