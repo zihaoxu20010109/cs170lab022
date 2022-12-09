@@ -154,7 +154,8 @@ void exceptionHandler(ExceptionType which)
 void interruptHandler(IntType which)
 {
 	if (is_noop == FALSE)
-	{
+	{	
+		curr->my_registers[NumTotalRegs];
 		examine_registers(curr->my_registers);
 		dll_append(readyq, new_jval_v((void *)curr));
 	}
