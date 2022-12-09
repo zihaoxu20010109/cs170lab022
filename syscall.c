@@ -41,9 +41,9 @@ void *do_write(void *arg)
     }
 
     int file_d_num = pcb->my_registers[5];
-    //if(file_d_num<0 || file_d_num>=64){
-    //    syscall_return(pcb, -EBADF); 
-    //}
+    if(file_d_num<0 || file_d_num>=64){
+        syscall_return(pcb, -EBADF); 
+    }
     if(pcb->fd[file_d_num]->open == FALSE){
         syscall_return(pcb, -EBADF); 
     }
@@ -108,11 +108,11 @@ void *do_write(void *arg)
             syscall_return(pcb, -EINVAL);
         }
 
-        //if(pcb->fd[file_d_num]->my_pipe->read_count==0){
+        if(pcb->fd[file_d_num]->my_pipe->read_count==0){
             //no more readers
-       //    syscall_return(pcb, -EBADF);
-       // }
-	P_kt_sem(writers);
+            syscall_return(pcb, -EBADF);
+        }
+
         P_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
         int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory + pcb->base); // convert the second arg into system address
 
@@ -134,7 +134,7 @@ void *do_write(void *arg)
             start_point += 1;
             P_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available);
 
-            if(pcb->fd[file_d_num]->my_pipe->read_count ==0){
+            if(pcb->fd[file_d_num]->my_pipe->read_count==0){
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
                 //broken pipe error
@@ -148,8 +148,8 @@ void *do_write(void *arg)
         pcb->fd[file_d_num]->my_pipe->writer_in_use += write_count;
 
         V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
-        V_kt_sem(writers);
-
+        
+        
         syscall_return(pcb, write_count);
     }
 }
@@ -518,7 +518,8 @@ void do_exit(void *arg){
     // dll_append(curr->parent->waiters, new_jval_v((void*)curr));
     jrb_delete_node(jrb_find_int(curr->parent->children, curr->pid));
 
-
+    //switch children to parents
+    
     while (!jrb_empty(curr->children)){
         struct PCB *pcb = (struct PCB *)jval_v(jrb_val(jrb_first(curr->children)));
         jrb_delete_node(jrb_find_int(curr->children, pcb->pid));
@@ -530,7 +531,6 @@ void do_exit(void *arg){
     while (!dll_empty(curr->waiters)){
         struct PCB *wait_child = (struct PCB *)jval_v(dll_val(dll_first(curr->waiters)));
         wait_child->parent = init;
-	
         dll_append(init->waiters, dll_val(dll_first(curr->waiters)));
         dll_delete_node(dll_first(curr->waiters));
         V_kt_sem(init->waiters_sem);
@@ -559,7 +559,7 @@ void do_exit(void *arg){
     }
 
     //clean up
-    if(curr->parent->pid == 1){
+    if(curr->parent->pid == 0){
         //    //close related fd table
         // for (int i = 0; i < 64; i++){
         //     if(curr->fd[i]->console==FALSE){
@@ -581,7 +581,7 @@ void do_exit(void *arg){
         //     }
         //     //free(curr->fd[i]);
         // }
-	
+
         //if parent is init
         for (int i = 0; i < NumTotalRegs; i++){
             curr->my_registers[i] = 0;
@@ -589,13 +589,13 @@ void do_exit(void *arg){
         destroy_pid(curr->pid);
         jrb_free_tree(curr->children);
         free_dllist(curr->waiters);
-        free(curr);			
+        free(curr);
     }else{
         V_kt_sem(curr->parent->waiters_sem);
         dll_append(curr->parent->waiters, new_jval_v((void*)curr));
     }
-    struct PCB *wait_child = (struct PCB *)jval_v(dll_val(dll_first(curr->waiters)));
     kt_exit();
+    //SYSHalt();
 }
 
 void getdtablesize(void *arg){
@@ -641,12 +641,13 @@ void do_close(void * arg){
             }
         }
     }
-   
+
+    
     //syscall_return(curr, -EBADF);
     syscall_return(curr, 0);
 }
 
-void do_wait(void * arg){ 
+void do_wait(void * arg){
     struct PCB *curr=(struct PCB*)arg;
 
     P_kt_sem(curr->waiters_sem);
@@ -659,11 +660,9 @@ void do_wait(void * arg){
     for(int i=0; i<NumTotalRegs; i++){
         completed_child->my_registers[i] = 0;
     }
-    free(completed_child->my_registers);
     jrb_free_tree(completed_child->children);
-    //memcpy(&main_memory[curr->base+curr->my_registers[5]], &completed_child->exit_value, sizeof(completed_child->exit_value));
     free_dllist(completed_child->waiters);
-	
+
     // for (int i = 0; i < 64; i++){
     //     if(completed_child->fd[i]->console==FALSE){
     //         if(completed_child->fd[i]->open==TRUE){
@@ -685,6 +684,8 @@ void do_wait(void * arg){
 
     int child_id = completed_child->pid;
     free(completed_child);
+
+
     syscall_return(curr, child_id);
 
     //SYSHalt();
@@ -844,9 +845,11 @@ void do_pipe(void *arg){
     
     syscall_return(curr, 0);
 }
+
 void handle_interrupt(struct PCB *pcb){
-	//DEBUG('e', "Interrupt handler (separate thread)");
+	DEBUG('e', "Interrupt handler (separate thread)");
 }
+
 void program_ready(struct PCB *pcb){ //TODO: maybe check for duplicates?
 	Jval val = new_jval_v(pcb);
 	dll_append(readyq, val);
