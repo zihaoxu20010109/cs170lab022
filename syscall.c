@@ -137,13 +137,12 @@ void *do_write(void *arg)
             if(pcb->fd[file_d_num]->my_pipe->read_count ==0){
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
-		P_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
                 //broken pipe error
                 syscall_return(pcb, -EPIPE);
             }
             V_kt_sem(pcb->fd[file_d_num]->my_pipe->nelement);
 
-            //pcb->fd[file_d_num]->my_pipe->writer_in_use += 1;
+            pcb->fd[file_d_num]->my_pipe->writer_in_use += 1;
         }
         //printf("The write count is %d", write_count);
         pcb->fd[file_d_num]->my_pipe->writer_in_use += write_count;
