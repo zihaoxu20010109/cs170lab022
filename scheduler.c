@@ -136,12 +136,7 @@ void scheduler(){
 
             SYSHalt();
         //}
-    JRB ptr = jrb_first(init->children);
-    if(ptr == jrb_nil(init->children)){
-        SYSHalt();
-    }	    
-	is_noop = TRUE;
-        noop();
+
     }else{
         struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
         curr = top;
