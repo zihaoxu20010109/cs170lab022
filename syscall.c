@@ -134,9 +134,10 @@ void *do_write(void *arg)
             start_point += 1;
             P_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available);
 
-            if(pcb->fd[file_d_num]->my_pipe->read_count -1 <0){
+            if(pcb->fd[file_d_num]->my_pipe->read_count ==0){
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
+		P_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
                 //broken pipe error
                 syscall_return(pcb, -EPIPE);
             }
