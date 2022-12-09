@@ -31,7 +31,6 @@ extern int curpid;
 extern JRB rbtree;
 
 extern struct PCB* init;
-extern struct PCB *curr;
 
 void initialize_scheduler();
 
