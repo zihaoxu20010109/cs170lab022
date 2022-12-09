@@ -23,6 +23,5 @@ void KOS()
 
 	buffer = init_buff();
 	kt_fork((void*)(cons_to_buff), (void*)(buffer));
-	start_timer(10);
 	scheduler();
 }
