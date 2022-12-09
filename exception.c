@@ -178,11 +178,6 @@ void interruptHandler(IntType which)
 		//scheduler();
 		break;
 	}
-	if(curr != NULL){ //user code was just run
-		examine_registers(curr->my_registers);
-		program_ready(curr); //TODO: duplicates
-	}
-
 	kt_fork((void *)handle_interrupt,(void *)curr);
 	scheduler();
 }
