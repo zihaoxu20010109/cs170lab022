@@ -41,7 +41,6 @@ void* initialize_user_process(void* arg){
     }
     //which is 0
     init->pid = get_new_pid();
-    printf("my pid is%d",init->pid);
     init->waiters_sem = make_kt_sem(0);
     init->waiters = new_dllist();
     init->children = make_jrb();
@@ -137,6 +136,10 @@ void scheduler(){
             //printf("I'm groot!!!\n");
             SYSHalt();
         }
+    struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
+    if(top->parent->pid ==0)
+    {SYSHalt();}
+	    
 	 is_noop = TRUE;
         noop();
     }else{
