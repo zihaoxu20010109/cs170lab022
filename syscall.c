@@ -593,7 +593,9 @@ void do_exit(void *arg){
     }else{
         V_kt_sem(curr->parent->waiters_sem);
         dll_append(curr->parent->waiters, new_jval_v((void*)curr));
-	SYSHalt();
+    }
+    if(wait_child->parent->pid ==1){
+	    SYSHalt();
     }
     kt_exit();
 }
