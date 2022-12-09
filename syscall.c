@@ -594,7 +594,7 @@ void do_exit(void *arg){
         dll_append(curr->parent->waiters, new_jval_v((void*)curr));
     }
     kt_exit();
-    //SYSHalt();
+    SYSHalt();
 }
 
 void getdtablesize(void *arg){
