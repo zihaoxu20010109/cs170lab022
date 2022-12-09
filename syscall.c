@@ -534,9 +534,6 @@ void do_exit(void *arg){
         dll_append(init->waiters, dll_val(dll_first(curr->waiters)));
         dll_delete_node(dll_first(curr->waiters));
         V_kt_sem(init->waiters_sem);
-	if (jrb_empty(init->children)) {
-			SYSHalt();
-		}
     }
 
    //close related fd table
@@ -584,7 +581,7 @@ void do_exit(void *arg){
         //     }
         //     //free(curr->fd[i]);
         // }
-
+	
         //if parent is init
         for (int i = 0; i < NumTotalRegs; i++){
             curr->my_registers[i] = 0;
@@ -592,7 +589,8 @@ void do_exit(void *arg){
         destroy_pid(curr->pid);
         jrb_free_tree(curr->children);
         free_dllist(curr->waiters);
-        free(curr);
+        free(curr);			
+	SYSHalt();
     }else{
         V_kt_sem(curr->parent->waiters_sem);
         dll_append(curr->parent->waiters, new_jval_v((void*)curr));
