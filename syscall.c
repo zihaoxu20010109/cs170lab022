@@ -595,9 +595,6 @@ void do_exit(void *arg){
         dll_append(curr->parent->waiters, new_jval_v((void*)curr));
     }
     struct PCB *wait_child = (struct PCB *)jval_v(dll_val(dll_first(curr->waiters)));
-    if(wait_child->parent->pid ==1){
-	    SYSHalt();
-    }
     kt_exit();
 }
 
@@ -644,7 +641,7 @@ void do_close(void * arg){
             }
         }
     }
-
+   
     //syscall_return(curr, -EBADF);
     syscall_return(curr, 0);
 }
