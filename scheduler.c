@@ -132,13 +132,13 @@ void scheduler(){
 
     if(dll_empty(readyq)){
         //printf("I'm batman!!!\n");
+	curr = NULL;
+        is_noop = TRUE;
+        noop();
         if(jrb_empty(init->children)){
             //printf("I'm groot!!!\n");
             SYSHalt();
-        }
-        curr = NULL;
-        is_noop = TRUE;
-        noop();    
+        }    
     }else{
         struct PCB *top = (struct PCB *)((dll_val(dll_first(readyq))).v);
         curr = top;
