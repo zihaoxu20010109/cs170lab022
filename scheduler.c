@@ -140,7 +140,7 @@ void scheduler(){
 	 is_noop = TRUE;
         noop();
     }else{
-        struct PCB *top = (struct PCB *)((dll_val(dll_first(readyq))).v);
+        struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
         curr = top;
         dll_delete_node(dll_first(readyq));
 	start_timer(10);
