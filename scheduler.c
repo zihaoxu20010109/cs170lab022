@@ -132,10 +132,10 @@ void scheduler(){
     if(dll_empty(readyq)== 1){
         //printf("I'm batman!!!\n");
 	curr = NULL;
-        if(jrb_empty(init->children)){
-            //printf("I'm groot!!!\n");
+        //if(jrb_empty(init->children)){
+
             SYSHalt();
-        }
+        //}
     JRB ptr = jrb_first(init->children);
     if(ptr == jrb_nil(init->children)){
         SYSHalt();
