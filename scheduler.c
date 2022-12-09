@@ -130,15 +130,15 @@ void* initialize_user_process(void* arg){
 void scheduler(){
     kt_joinall();
 
-    if(dll_empty(readyq)){
+    if(dll_empty(readyq == 1)){
         //printf("I'm batman!!!\n");
 	curr = NULL;
-        is_noop = TRUE;
-        noop();
         if(jrb_empty(init->children)){
             //printf("I'm groot!!!\n");
             SYSHalt();
-        }    
+        }
+	 is_noop = TRUE;
+        noop();
     }else{
         struct PCB *top = (struct PCB *)((dll_val(dll_first(readyq))).v);
         curr = top;
