@@ -138,7 +138,7 @@ void *do_write(void *arg)
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
                 //broken pipe error
-                syscall_return(pcb, -EPIPE);
+                //syscall_return(pcb, -EPIPE);
             }
             V_kt_sem(pcb->fd[file_d_num]->my_pipe->nelement);
 
