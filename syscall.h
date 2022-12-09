@@ -36,7 +36,7 @@ extern void get_ppid(void * arg);
 
 extern void do_dup(void * arg);
 extern void do_dup2(void * arg);
-
+extern void handle_interrupt(struct PCB *pcb);
 extern void do_pipe(void *arg);
 
 extern kt_sem writeok;
