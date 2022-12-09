@@ -648,7 +648,48 @@ void do_close(void * arg){
 }
 
 void do_wait(void * arg){
- 
+ 	SYSHalt();
+    struct PCB *curr=(struct PCB*)arg;
+
+    P_kt_sem(curr->waiters_sem);
+    
+    struct PCB *completed_child = (struct PCB *)(jval_v((dll_val(dll_first(curr->waiters)))));
+
+    //clean up everything for child
+    dll_delete_node(dll_first(curr->waiters));
+    destroy_pid(completed_child->pid);
+    for(int i=0; i<NumTotalRegs; i++){
+        completed_child->my_registers[i] = 0;
+    }
+    jrb_free_tree(completed_child->children);
+    free_dllist(completed_child->waiters);
+
+    // for (int i = 0; i < 64; i++){
+    //     if(completed_child->fd[i]->console==FALSE){
+    //         if(completed_child->fd[i]->open==TRUE){
+    //             if(completed_child->fd[i]->isread==TRUE){
+    //                 completed_child->fd[i]->my_pipe->read_count -= 1;
+    //             }else{
+    //                 completed_child->fd[i]->my_pipe->write_count-= 1;
+    //             }
+
+    //             if(completed_child->fd[i]->my_pipe->read_count == 0 && completed_child->fd[i]->my_pipe->write_count==0){
+    //                 free(completed_child->fd[i]->my_pipe);
+    //             }
+
+    //             completed_child->fd[i]->open = FALSE;
+    //         }
+    //     }
+    //     //free(curr->fd[i]);
+    // }
+
+    int child_id = completed_child->pid;
+    free(completed_child);
+
+
+    syscall_return(curr, child_id);
+
+    //SYSHalt();
 }
 
 void get_ppid(void * arg){
