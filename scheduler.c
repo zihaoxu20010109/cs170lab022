@@ -143,7 +143,7 @@ void scheduler(){
         struct PCB *top = (struct PCB *)((dll_val(dll_first(readyq))).v);
         curr = top;
         dll_delete_node(dll_first(readyq));
-
+	start_timer(10);
         is_noop = FALSE;
         User_Base = curr->base;
         User_Limit = curr->limit;
