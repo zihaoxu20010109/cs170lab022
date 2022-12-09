@@ -130,7 +130,7 @@ void *do_write(void *arg)
             j++;
             write_count++;
             
-            pcb->fd[file_d_num]->my_pipe->write_head = (pcb->fd[file_d_num]->my_pipe->write_head+1) % (8192);
+            pcb->fd[file_d_num]->my_pipe->write_head = (pcb->fd[file_d_num]->my_pipe->write_head+1) % (8192-pcb->fd[file_d_num]->my_pipe->writer_in_use);
             start_point += 1;
             P_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available);
 
@@ -142,7 +142,7 @@ void *do_write(void *arg)
             }
             V_kt_sem(pcb->fd[file_d_num]->my_pipe->nelement);
 
-            pcb->fd[file_d_num]->my_pipe->writer_in_use += 1;
+            //pcb->fd[file_d_num]->my_pipe->writer_in_use += 1;
         }
         //printf("The write count is %d", write_count);
         pcb->fd[file_d_num]->my_pipe->writer_in_use += write_count;
