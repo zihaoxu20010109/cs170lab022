@@ -559,7 +559,7 @@ void do_exit(void *arg){
     }
 
     //clean up
-    if(curr->parent->pid == 0){
+    if(curr->parent->pid == 1){
         //    //close related fd table
         // for (int i = 0; i < 64; i++){
         //     if(curr->fd[i]->console==FALSE){
@@ -586,7 +586,6 @@ void do_exit(void *arg){
         for (int i = 0; i < NumTotalRegs; i++){
             curr->my_registers[i] = 0;
         }
-	SYSHalt();
         destroy_pid(curr->pid);
         jrb_free_tree(curr->children);
         free_dllist(curr->waiters);
