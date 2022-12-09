@@ -112,7 +112,7 @@ void *do_write(void *arg)
             //no more readers
        //    syscall_return(pcb, -EBADF);
        // }
-
+	P_kt_sem(writers);
         P_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
         int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory + pcb->base); // convert the second arg into system address
 
