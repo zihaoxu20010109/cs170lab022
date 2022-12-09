@@ -132,7 +132,7 @@ void scheduler(){
     if(dll_empty(readyq)== 1){
         //printf("I'm batman!!!\n");
 	curr = NULL;
-        //if(jrb_empty(init->children)){
+        if(jrb_empty(init->children)){
 
             SYSHalt();
         //}
