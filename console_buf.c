@@ -35,9 +35,7 @@ void cons_to_buff(struct console_buf* buffer) {
         buffer -> buff[(buffer -> tail)%(buffer->size)] = c;
         //increment the tail of buffer by 1
         //The tail and head will be checked by semaphore
-        if ((buffer -> tail + 1)%(buffer->size) != buffer -> head) {
         buffer -> tail = (buffer -> tail + 1)%(buffer->size);
-        }
     }
     //kt_exit();
 }
