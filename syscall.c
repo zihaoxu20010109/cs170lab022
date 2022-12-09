@@ -640,9 +640,6 @@ void do_close(void * arg){
         }
     }
 
-    if (jrb_empty(curr->children)) {
-			SYSHalt();
-		}
     //syscall_return(curr, -EBADF);
     syscall_return(curr, 0);
 }
@@ -687,7 +684,9 @@ void do_wait(void * arg){
     int child_id = completed_child->pid;
     free(completed_child);
 
-
+    if (jrb_empty(curr->children)) {
+			SYSHalt();
+		}
     syscall_return(curr, child_id);
 
     //SYSHalt();
