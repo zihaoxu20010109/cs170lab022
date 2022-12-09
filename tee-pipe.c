@@ -156,7 +156,8 @@ int main(int argc, char **argv)
 				while(sent < bytes) {
 					sent = write(pd[i*2+1],&in_buf[sent],bytes - sent);
 					if(sent <= 0) {
-						fprintf(stderr,"ERROR: write returned %d\n",err);
+						
+						fprintf(stderr,"ERROR: write returned %d\n my bytes is%d my sent is",err,bytes,sent);
 						exit(1);
 					}
 					sent = sent + bytes;
