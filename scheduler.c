@@ -135,7 +135,7 @@ void scheduler(){
         if(jrb_empty(init->children)){
 
             SYSHalt();
-        //}
+        }
 
     }else{
         struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
