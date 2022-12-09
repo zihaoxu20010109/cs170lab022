@@ -136,7 +136,8 @@ void scheduler(){
 
             SYSHalt();
         }
-
+        is_noop = TRUE;
+        noop(); 
     }else{
         struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
         curr = top;
