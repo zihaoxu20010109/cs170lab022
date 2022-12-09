@@ -519,7 +519,13 @@ void do_exit(void *arg){
     jrb_delete_node(jrb_find_int(curr->parent->children, curr->pid));
 
     //switch children to parents
-    
+    PCB* tmp_pcb;
+    Dllist tmp_zombie;
+	dll_traverse(tmp_zombie, pcb->waiters){
+		tmp_pcb = (PCB*)jval_v(dll_val(tmp_zombie));
+		destroy_pid(tmp_pcb->pid);
+		destroy_pcb(tmp_pcb);
+	}
     while (!jrb_empty(curr->children)){
         struct PCB *pcb = (struct PCB *)jval_v(jrb_val(jrb_first(curr->children)));
         jrb_delete_node(jrb_find_int(curr->children, pcb->pid));
