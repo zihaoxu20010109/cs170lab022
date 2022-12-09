@@ -183,6 +183,6 @@ void interruptHandler(IntType which)
 		program_ready(curr); //TODO: duplicates
 	}
 
-	kt_fork((void (*)(void*))handle_interrupt,current_pcb);
+	kt_fork((void (*)(void*))handle_interrupt,curr);
 	scheduler();
 }
