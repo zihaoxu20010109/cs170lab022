@@ -137,7 +137,7 @@ void scheduler(){
             SYSHalt();
         }
     struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
-    if(top->parent->pid ==0)
+    if(curr->parent->pid ==0)
     {SYSHalt();}
 	    
 	 is_noop = TRUE;
