@@ -660,6 +660,7 @@ void do_wait(void * arg){
     for(int i=0; i<NumTotalRegs; i++){
         completed_child->my_registers[i] = 0;
     }
+    free(completed_child->my_registers);
     jrb_free_tree(completed_child->children);
     free_dllist(completed_child->waiters);
 
