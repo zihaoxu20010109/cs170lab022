@@ -15,7 +15,7 @@ kt_sem readers;
 
 
 void initialize_sema(){
-	writeok = make_kt_sem(1);
+	writeok = make_kt_sem(0);
     writers = make_kt_sem(1);
     readers = make_kt_sem(1);
 }
