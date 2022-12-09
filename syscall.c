@@ -108,10 +108,10 @@ void *do_write(void *arg)
             syscall_return(pcb, -EINVAL);
         }
 
-        if(pcb->fd[file_d_num]->my_pipe->read_count==0){
+        //if(pcb->fd[file_d_num]->my_pipe->read_count==0){
             //no more readers
-            syscall_return(pcb, -EBADF);
-        }
+       //    syscall_return(pcb, -EBADF);
+       // }
 
         P_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
         int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory + pcb->base); // convert the second arg into system address
