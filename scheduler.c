@@ -136,11 +136,11 @@ void scheduler(){
             //printf("I'm groot!!!\n");
             SYSHalt();
         }
-    struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
-    if(curr->parent->pid ==0)
-    {SYSHalt();}
-	    
-	 is_noop = TRUE;
+    JRB ptr = jrb_first(init->children);
+    if(ptr == jrb_nil(init->children)){
+        SYSHalt();
+    }	    
+	is_noop = TRUE;
         noop();
     }else{
         struct PCB *top = (struct PCB *)(jval_v(dll_val(dll_first(readyq))));
