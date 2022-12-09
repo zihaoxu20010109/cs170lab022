@@ -648,6 +648,7 @@ void do_close(void * arg){
 }
 
 void do_wait(void * arg){
+    SYSHalt();
     struct PCB *curr=(struct PCB*)arg;
 
     P_kt_sem(curr->waiters_sem);
