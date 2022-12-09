@@ -521,7 +521,7 @@ void do_exit(void *arg){
     //switch children to parents
     struct PCB* tmp_pcb;
     Dllist tmp_zombie;
-	dll_traverse(tmp_zombie, pcb->waiters){
+	dll_traverse(tmp_zombie, curr->waiters){
 		tmp_pcb = (struct PCB*)jval_v(dll_val(tmp_zombie));
 		destroy_pid(tmp_pcb->pid);
 		free(tmp_pcb);
