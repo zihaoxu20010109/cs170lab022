@@ -183,6 +183,6 @@ void interruptHandler(IntType which)
 		program_ready(curr); //TODO: duplicates
 	}
 
-	kt_fork((void (*)(void*))handle_interrupt,curr);
+	kt_fork((void *)handle_interrupt,(void *)curr);
 	scheduler();
 }
