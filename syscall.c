@@ -848,3 +848,7 @@ void do_pipe(void *arg){
 void handle_interrupt(struct PCB *pcb){
 	DEBUG('e', "Interrupt handler (separate thread)");
 }
+void program_ready(struct PCB *pcb){ //TODO: maybe check for duplicates?
+	Jval val = new_jval_v(pcb);
+	dll_append(readyq, val);
+}
