@@ -130,7 +130,7 @@ void* initialize_user_process(void* arg){
 void scheduler(){
     kt_joinall();
 
-    if(dll_empty(readyq == 1)){
+    if(dll_empty(readyq)== 1){
         //printf("I'm batman!!!\n");
 	curr = NULL;
         if(jrb_empty(init->children)){
