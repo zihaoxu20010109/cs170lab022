@@ -530,10 +530,13 @@ void do_exit(void *arg){
     while (!dll_empty(curr->waiters)){
         struct PCB *wait_child = (struct PCB *)jval_v(dll_val(dll_first(curr->waiters)));
         wait_child->parent = init;
-	init->children = wait_child;
+	
         dll_append(init->waiters, dll_val(dll_first(curr->waiters)));
         dll_delete_node(dll_first(curr->waiters));
         V_kt_sem(init->waiters_sem);
+	if (jrb_empty(init->children)) {
+			SYSHalt();
+		}
     }
 
    //close related fd table
