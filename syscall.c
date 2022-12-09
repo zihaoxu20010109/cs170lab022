@@ -36,9 +36,9 @@ void *do_write(void *arg)
 {
     struct PCB *pcb = (struct PCB *)arg;
     //check if address is valid
-    if(ValidAddress(arg) == FALSE){
-        syscall_return(pcb, -EFAULT);
-    }
+    //if(ValidAddress(arg) == FALSE){
+    //    syscall_return(pcb, -EFAULT);
+    //}
 
     int file_d_num = pcb->my_registers[5];
     if(file_d_num<0 || file_d_num>=64){
@@ -138,7 +138,7 @@ void *do_write(void *arg)
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
                 //broken pipe error
-                //syscall_return(pcb, -EPIPE);
+                syscall_return(pcb, -EPIPE);
             }
             V_kt_sem(pcb->fd[file_d_num]->my_pipe->nelement);
 
