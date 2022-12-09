@@ -36,14 +36,14 @@ void *do_write(void *arg)
 {
     struct PCB *pcb = (struct PCB *)arg;
     //check if address is valid
-    //if(ValidAddress(arg) == FALSE){
-    //    syscall_return(pcb, -EFAULT);
-    //}
+    if(ValidAddress(arg) == FALSE){
+        syscall_return(pcb, -EFAULT);
+    }
 
     int file_d_num = pcb->my_registers[5];
-    if(file_d_num<0 || file_d_num>=64){
-        syscall_return(pcb, -EBADF); 
-    }
+    //if(file_d_num<0 || file_d_num>=64){
+    //    syscall_return(pcb, -EBADF); 
+    //}
     if(pcb->fd[file_d_num]->open == FALSE){
         syscall_return(pcb, -EBADF); 
     }
@@ -54,9 +54,9 @@ void *do_write(void *arg)
     if(pcb->fd[file_d_num]->console == TRUE){
         int arg1 = pcb->my_registers[5];
     
-        //if (arg1 != 1 && arg1 != 2){   
-        //    syscall_return(pcb, -EBADF);
-        //}
+        if (arg1 != 1 && arg1 != 2){   
+            syscall_return(pcb, -EBADF);
+        }
     
         int arg2 = pcb->my_registers[6];
         if (arg2 < 0) {
