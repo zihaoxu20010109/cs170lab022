@@ -41,7 +41,7 @@ void* initialize_user_process(void* arg){
     }
     //which is 0
     init->pid = get_new_pid();
-
+    print("my pid is%d",init->pid);
     init->waiters_sem = make_kt_sem(0);
     init->waiters = new_dllist();
     init->children = make_jrb();
