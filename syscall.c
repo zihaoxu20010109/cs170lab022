@@ -63,7 +63,7 @@ void *do_write(void *arg)
             syscall_return(pcb, -EFAULT);
         }
 
-        if((arg2+pcb->my_registers[7]) > MemorySize/8){
+        if((arg2+pcb->my_registers[7]) > User_Limit){
             syscall_return(pcb,-EFBIG);
         }
 
@@ -99,7 +99,7 @@ void *do_write(void *arg)
             syscall_return(pcb, -EFAULT);
         }
 
-        if((arg2+pcb->my_registers[7]) > MemorySize/8){
+        if((arg2+pcb->my_registers[7]) > User_Limit){
             syscall_return(pcb,-EFBIG);
         }
 
@@ -188,15 +188,15 @@ void *do_read(void *arg)
             syscall_return(pcb, -EBADF);
         }
         int arg2 = pcb->my_registers[6];
-        if (arg2 < 0 || arg2 >= (MemorySize / 8))
+        if (arg2 < 0 || arg2 >= User_Limit)
         {
             syscall_return(pcb, -EFAULT);
         }
         //the third argument
-        if(pcb->my_registers[7] < 0||(int)(pcb->my_registers[6]) >= (MemorySize / 8)){
+        if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-	if((arg2+pcb->my_registers[7]) > MemorySize/8){
+	if((arg2+pcb->my_registers[7]) > User_Limit){
             syscall_return(pcb,-EFBIG);
         }
         P_kt_sem(readers);
@@ -225,7 +225,7 @@ void *do_read(void *arg)
         syscall_return(pcb, count);
     }else{
         int arg2 = pcb->my_registers[6];
-        if (arg2 < 0 ||arg2 >= (MemorySize / 8))
+        if (arg2 < 0 ||arg2 >= User_Limit)
         {
             syscall_return(pcb, -EFAULT);
         }
@@ -233,13 +233,10 @@ void *do_read(void *arg)
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-	if((arg2+pcb->my_registers[7]) > MemorySize/8){
+	if((arg2+pcb->my_registers[7]) > User_Limit){
             syscall_return(pcb,-EFBIG);
         }
 
-        if(pcb->my_registers[7] < 0){
-            syscall_return(pcb, -EINVAL);
-        }
         //printf("I'm batman\n");
 
         P_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
