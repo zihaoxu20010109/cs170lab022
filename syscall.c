@@ -188,7 +188,7 @@ void *do_read(void *arg)
             syscall_return(pcb, -EBADF);
         }
         int arg2 = pcb->my_registers[6];
-        if (arg2 < 0 ||)
+        if (arg2 < 0 || arg2 >= (MemorySize / 8))
         {
             syscall_return(pcb, -EFAULT);
         }
@@ -225,7 +225,7 @@ void *do_read(void *arg)
         syscall_return(pcb, count);
     }else{
         int arg2 = pcb->my_registers[6];
-        if (arg2 < 0)
+        if (arg2 < 0 arg2 >= (MemorySize / 8))
         {
             syscall_return(pcb, -EFAULT);
         }
