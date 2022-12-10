@@ -63,7 +63,7 @@ void *do_write(void *arg)
             syscall_return(pcb, -EFAULT);
         }
 
-        if((arg2+pcb->my_registers[7]) > MemorySize){
+        if((arg2+pcb->my_registers[7]) > MemorySize/8){
             syscall_return(pcb,-EFBIG);
         }
 
@@ -99,7 +99,7 @@ void *do_write(void *arg)
             syscall_return(pcb, -EFAULT);
         }
 
-        if((arg2+pcb->my_registers[7]) > MemorySize){
+        if((arg2+pcb->my_registers[7]) > MemorySize/8){
             syscall_return(pcb,-EFBIG);
         }
 
@@ -196,7 +196,7 @@ void *do_read(void *arg)
         if(pcb->my_registers[7] < 0||(int)(pcb->my_registers[6]) >= (MemorySize / 8)){
             syscall_return(pcb, -EINVAL);
         }
-	if((arg2+pcb->my_registers[7]) > MemorySize){
+	if((arg2+pcb->my_registers[7]) > MemorySize/8){
             syscall_return(pcb,-EFBIG);
         }
         P_kt_sem(readers);
@@ -233,7 +233,7 @@ void *do_read(void *arg)
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-	if((arg2+pcb->my_registers[7]) > MemorySize){
+	if((arg2+pcb->my_registers[7]) > MemorySize/8){
             syscall_return(pcb,-EFBIG);
         }
 
