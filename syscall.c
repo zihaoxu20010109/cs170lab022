@@ -250,7 +250,7 @@ void *do_read(void *arg)
                 //no more writers
                 //V_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available); 
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
-                syscall_return(pcb, count);
+                syscall_return(pcb, -1);
             }
 
             if(count == pcb->fd[file_d_num]->my_pipe->writer_in_use){
@@ -260,7 +260,7 @@ void *do_read(void *arg)
                 pcb->fd[file_d_num]->my_pipe->writer_in_use -= count;
                 //V_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available); 
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
-                syscall_return(pcb, count);
+                syscall_return(pcb, -1);
             }
 
             P_kt_sem(pcb->fd[file_d_num]->my_pipe->nelement);
