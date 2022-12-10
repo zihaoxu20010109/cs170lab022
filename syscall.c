@@ -193,7 +193,7 @@ void *do_read(void *arg)
             syscall_return(pcb, -EFAULT);
         }
         //the third argument
-        if(pcb->my_registers[7] < 0||(int)(pcb->registers[6]) >= (MemorySize / 8)){
+        if(pcb->my_registers[7] < 0||(int)(pcb->my_registers[6]) >= (MemorySize / 8)){
             syscall_return(pcb, -EINVAL);
         }
 	if((arg2+pcb->my_registers[7]) > MemorySize){
