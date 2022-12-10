@@ -210,7 +210,7 @@ void *do_read(void *arg)
             if (toRead == -1){
                 V_kt_sem(nslots); 
                 V_kt_sem(readers);
-                syscall_return(pcb, count);
+                syscall_return(pcb, -1);
             }
 
             ((char *)(pcb->my_registers[6] + main_memory + pcb->base))[i] = toRead;
@@ -271,7 +271,7 @@ void *do_read(void *arg)
             if (toRead == -1){
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available); 
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
-                syscall_return(pcb, count);
+                syscall_return(pcb, -1);
             }
 
 
