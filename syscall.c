@@ -94,10 +94,6 @@ void *do_write(void *arg)
         syscall_return(pcb, write_count);
     
     }else{
-	int arg1 = pcb->my_registers[5];
-	if (arg1 <=0){   
-            syscall_return(pcb, -EBADF);
-        }
         int arg2 = pcb->my_registers[6];
         if (arg2 < 0) {
             syscall_return(pcb, -EFAULT);
@@ -200,8 +196,9 @@ void *do_read(void *arg)
         if(pcb->my_registers[7] <= 0){
             syscall_return(pcb, -EINVAL);
         }
-
-
+	if((arg2+pcb->my_registers[7]) > MemorySize){
+            syscall_return(pcb,-EFBIG);
+        }
         P_kt_sem(readers);
         //int min = MIN(pcb->my_registers[7], buffer->size);
         int min = pcb->my_registers[7];
@@ -236,7 +233,13 @@ void *do_read(void *arg)
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
+	if((arg2+pcb->my_registers[7]) > MemorySize){
+            syscall_return(pcb,-EFBIG);
+        }
 
+        if(pcb->my_registers[7] < 0){
+            syscall_return(pcb, -EINVAL);
+        }
         //printf("I'm batman\n");
 
         P_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
