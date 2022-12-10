@@ -189,12 +189,12 @@ void *do_read(void *arg)
             syscall_return(pcb, -EBADF);
         }
         int arg2 = pcb->my_registers[6];
-        if (arg2 < 0)
+        if (arg2 <= 0)
         {
             syscall_return(pcb, -EFAULT);
         }
         //the third argument
-        if(pcb->my_registers[7] < 0){
+        if(pcb->my_registers[7] <= 0){
             syscall_return(pcb, -EINVAL);
         }
 
