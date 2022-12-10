@@ -63,18 +63,14 @@ void *do_write(void *arg)
             syscall_return(pcb, -EFAULT);
         }
 
-        if((arg2+pcb->my_registers[7]) >= User_Limit){
+        if((arg2+pcb->my_registers[7]) > MemorySize){
             syscall_return(pcb,-EFBIG);
         }
-	if((arg2+pcb->my_registers[7]) >= arg2){
-            syscall_return(pcb,-EFBIG);
-        }
+
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-	if(pcb->my_registers[7] >= arg2){
-            syscall_return(pcb, -EINVAL);
-        }
+
         P_kt_sem(writers);
         //pcb->my_registers[6]
         int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory + pcb->base); // convert the second arg into system address
@@ -98,17 +94,16 @@ void *do_write(void *arg)
         syscall_return(pcb, write_count);
     
     }else{
+
         int arg2 = pcb->my_registers[6];
         if (arg2 < 0) {
             syscall_return(pcb, -EFAULT);
         }
 
-        if((arg2+pcb->my_registers[7]) > User_Limit){
+        if((arg2+pcb->my_registers[7]) > MemorySize){
             syscall_return(pcb,-EFBIG);
         }
-	if(pcb->my_registers[7] >= arg2){
-            syscall_return(pcb, -EINVAL);
-        }
+
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
@@ -139,7 +134,7 @@ void *do_write(void *arg)
             start_point += 1;
             P_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available);
 
-            if(pcb->fd[file_d_num]->my_pipe->read_count==0 ){
+            if(pcb->fd[file_d_num]->my_pipe->read_count==0){
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
                 //broken pipe error
@@ -194,7 +189,7 @@ void *do_read(void *arg)
             syscall_return(pcb, -EBADF);
         }
         int arg2 = pcb->my_registers[6];
-        if (arg2 < 0 || arg2 >= User_Limit)
+        if (arg2 < 0)
         {
             syscall_return(pcb, -EFAULT);
         }
@@ -202,12 +197,11 @@ void *do_read(void *arg)
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-	if((arg2+pcb->my_registers[7]) > User_Limit){
-            syscall_return(pcb,-EFBIG);
-        }
+
+
         P_kt_sem(readers);
+        //int min = MIN(pcb->my_registers[7], buffer->size);
         int min = pcb->my_registers[7];
-        //int min = pcb->my_registers[7];
         int count = 0;
         for (int i = 0; i < min; i++){
             P_kt_sem(nelem);
@@ -216,7 +210,7 @@ void *do_read(void *arg)
             if (toRead == -1){
                 V_kt_sem(nslots); 
                 V_kt_sem(readers);
-                syscall_return(pcb, -1);
+                syscall_return(pcb, count);
             }
 
             ((char *)(pcb->my_registers[6] + main_memory + pcb->base))[i] = toRead;
@@ -231,16 +225,13 @@ void *do_read(void *arg)
         syscall_return(pcb, count);
     }else{
         int arg2 = pcb->my_registers[6];
-        if (arg2 < 0 ||arg2 >= User_Limit)
+        if (arg2 < 0)
         {
             syscall_return(pcb, -EFAULT);
         }
         //the third argument
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
-        }
-	if((arg2+pcb->my_registers[7]) > User_Limit){
-            syscall_return(pcb,-EFBIG);
         }
 
         //printf("I'm batman\n");
@@ -256,7 +247,7 @@ void *do_read(void *arg)
                 //no more writers
                 //V_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available); 
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
-                syscall_return(pcb, -1);
+                syscall_return(pcb, count);
             }
 
             if(count == pcb->fd[file_d_num]->my_pipe->writer_in_use){
@@ -266,7 +257,7 @@ void *do_read(void *arg)
                 pcb->fd[file_d_num]->my_pipe->writer_in_use -= count;
                 //V_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available); 
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
-                syscall_return(pcb, -1);
+                syscall_return(pcb, count);
             }
 
             P_kt_sem(pcb->fd[file_d_num]->my_pipe->nelement);
@@ -277,7 +268,7 @@ void *do_read(void *arg)
             if (toRead == -1){
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available); 
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->read);
-                syscall_return(pcb, -1);
+                syscall_return(pcb, count);
             }
 
 
@@ -657,7 +648,6 @@ void do_close(void * arg){
 }
 
 void do_wait(void * arg){
- 	SYSHalt();
     struct PCB *curr=(struct PCB*)arg;
 
     P_kt_sem(curr->waiters_sem);
