@@ -200,7 +200,7 @@ void *do_read(void *arg)
             syscall_return(pcb,-EFBIG);
         }
         P_kt_sem(readers);
-        int min = MIN(pcb->my_registers[7], buffer->size);
+        int min = pcb->my_registers[7];
         //int min = pcb->my_registers[7];
         int count = 0;
         for (int i = 0; i < min; i++){
@@ -243,7 +243,7 @@ void *do_read(void *arg)
         
         int starter_int = pcb->fd[file_d_num]->my_pipe->read_head;
 
-        int min = MIN(pcb->my_registers[7], buffer->size);
+        int min = pcb->my_registers[7];
         int count = 0;
         for (int i = 0; i < min; i++){
             if(pcb->fd[file_d_num]->my_pipe->write_count==0){
