@@ -243,7 +243,7 @@ void *do_read(void *arg)
         
         int starter_int = pcb->fd[file_d_num]->my_pipe->read_head;
 
-        int min = pcb->my_registers[7];
+        int min = MIN(pcb->my_registers[7], buffer->size);
         int count = 0;
         for (int i = 0; i < min; i++){
             if(pcb->fd[file_d_num]->my_pipe->write_count==0){
