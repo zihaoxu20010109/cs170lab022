@@ -133,7 +133,7 @@ void *do_write(void *arg)
             start_point += 1;
             P_kt_sem(pcb->fd[file_d_num]->my_pipe->space_available);
 
-            if(pcb->fd[file_d_num]->my_pipe->read_count==0){
+            if(pcb->fd[file_d_num]->my_pipe->read_count==0 ){
                 //no more readers
                 V_kt_sem(pcb->fd[file_d_num]->my_pipe->write);
                 //broken pipe error
@@ -188,12 +188,12 @@ void *do_read(void *arg)
             syscall_return(pcb, -EBADF);
         }
         int arg2 = pcb->my_registers[6];
-        if (arg2 <= 0)
+        if (arg2 < 0 ||)
         {
             syscall_return(pcb, -EFAULT);
         }
         //the third argument
-        if(pcb->my_registers[7] <= 0){
+        if(pcb->my_registers[7] < 0||(int)(pcb->registers[6]) >= (MemorySize / 8)){
             syscall_return(pcb, -EINVAL);
         }
 	if((arg2+pcb->my_registers[7]) > MemorySize){
