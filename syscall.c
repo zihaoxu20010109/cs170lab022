@@ -200,8 +200,8 @@ void *do_read(void *arg)
             syscall_return(pcb,-EFBIG);
         }
         P_kt_sem(readers);
-        //int min = MIN(pcb->my_registers[7], buffer->size);
-        int min = pcb->my_registers[7];
+        int min = MIN(pcb->my_registers[7], buffer->size);
+        //int min = pcb->my_registers[7];
         int count = 0;
         for (int i = 0; i < min; i++){
             P_kt_sem(nelem);
