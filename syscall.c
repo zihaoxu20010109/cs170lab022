@@ -57,6 +57,9 @@ void *do_write(void *arg)
         if (arg1 != 1 && arg1 != 2){   
             syscall_return(pcb, -EBADF);
         }
+	if (arg1>=2){   
+            syscall_return(pcb, -EBADF);
+        }
         int arg2 = pcb->my_registers[6];
         if (arg2 < 0) {
             syscall_return(pcb, -EFAULT);
