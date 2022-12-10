@@ -47,7 +47,7 @@ void *do_write(void *arg)
     if(pcb->fd[file_d_num]->open == FALSE){
         syscall_return(pcb, -EBADF); 
     }
-    if(pcb->fd[file_d_num]->isread == TRUE){
+    if(pcb->fd[file_d_num]->isread == FALSE){
         syscall_return(pcb, -EBADF); 
     }
 
