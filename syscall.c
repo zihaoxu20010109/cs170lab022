@@ -47,7 +47,7 @@ void *do_write(void *arg)
     if(pcb->fd[file_d_num]->open == FALSE){
         syscall_return(pcb, -EBADF); 
     }
-    if(pcb->fd[file_d_num]->isread == FALSE){
+    if(pcb->fd[file_d_num]->isread == TRUE){
         syscall_return(pcb, -EBADF); 
     }
 
@@ -63,14 +63,18 @@ void *do_write(void *arg)
             syscall_return(pcb, -EFAULT);
         }
 
-        if((arg2+pcb->my_registers[7]) > User_Limit){
+        if((arg2+pcb->my_registers[7]) >= User_Limit){
             syscall_return(pcb,-EFBIG);
         }
-
+	if((arg2+pcb->my_registers[7]) >= arg2){
+            syscall_return(pcb,-EFBIG);
+        }
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-
+	if(pcb->my_registers[7] >= arg2){
+            syscall_return(pcb, -EINVAL);
+        }
         P_kt_sem(writers);
         //pcb->my_registers[6]
         int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory + pcb->base); // convert the second arg into system address
@@ -102,7 +106,9 @@ void *do_write(void *arg)
         if((arg2+pcb->my_registers[7]) > User_Limit){
             syscall_return(pcb,-EFBIG);
         }
-
+	if(pcb->my_registers[7] >= arg2){
+            syscall_return(pcb, -EINVAL);
+        }
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
