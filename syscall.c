@@ -57,9 +57,6 @@ void *do_write(void *arg)
         if (arg1 != 1 && arg1 != 2){   
             syscall_return(pcb, -EBADF);
         }
-	if (arg1>=2){   
-            syscall_return(pcb, -EBADF);
-        }
         int arg2 = pcb->my_registers[6];
         if (arg2 < 0) {
             syscall_return(pcb, -EFAULT);
@@ -72,7 +69,9 @@ void *do_write(void *arg)
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-
+	if(pcb->my_registers[7] >pcb->my_registers[6]){
+            syscall_return(pcb, -EINVAL);
+        }
         P_kt_sem(writers);
         //pcb->my_registers[6]
         int my_local_reg6 = (int)(pcb->my_registers[6] + main_memory + pcb->base); // convert the second arg into system address
@@ -97,10 +96,6 @@ void *do_write(void *arg)
     
     }else{
 	int arg1 = pcb->my_registers[5];
-    
-        if (arg1>=2){   
-            syscall_return(pcb, -EBADF);
-        }
         int arg2 = pcb->my_registers[6];
         if (arg2 < 0) {
             syscall_return(pcb, -EFAULT);
@@ -113,7 +108,9 @@ void *do_write(void *arg)
         if(pcb->my_registers[7] < 0){
             syscall_return(pcb, -EINVAL);
         }
-
+	if(pcb->my_registers[7] >pcb->my_registers[6]){
+            syscall_return(pcb, -EINVAL);
+        }
         if(pcb->fd[file_d_num]->my_pipe->read_count==0){
             //no more readers
             syscall_return(pcb, -EBADF);
